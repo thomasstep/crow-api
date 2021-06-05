@@ -2,6 +2,10 @@
 
 Crow API is an AWS CDK construct meant to speed up the time to market for an API. Crow lets you build an API intuitively based on the file structure of a project.
 
+```sh
+npm install --save crow-api
+```
+
 ## Getting Started
 
 [Start your application as a normal CDK app](https://docs.aws.amazon.com/cdk/latest/guide/getting_started.html)
