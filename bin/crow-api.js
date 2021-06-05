@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const cdk = require('@aws-cdk/core');
+const { TablesStack } = require('../lib/tables-stack');
 const { CrowApiStack } = require('../lib/crow-api-stack');
 
 const devEnvironment = {
@@ -10,9 +11,17 @@ const devEnvironment = {
 
 const app = new cdk.App();
 
+const tables = new TablesStack(app, 'TablesStack', {
+  env: devEnvironment,
+});
+
+
 new CrowApiStack(app, 'CrowApiStack', {
   env: devEnvironment,
   sourceDirectory: 'src',
   sharedDirectory: 'utils',
   createApiKey: true,
+  databaseTables: {
+    primaryTable: tables.primaryTable,
+  },
 });

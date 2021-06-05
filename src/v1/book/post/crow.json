@@ -1,0 +1,10 @@
+{
+  "databaseTables": {
+    "primaryTable": "PRIMARY_TABLE_NAME"
+  },
+  "lambdaConfiguration": {
+    "memorySize": 256
+  },
+  "apigateway": {
+  }
+}
