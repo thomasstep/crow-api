@@ -35,7 +35,7 @@ class MyAppStack extends cdk.Stack {
     super(scope, id, props);
 
     // The code that defines your stack goes here
-    new CrowApi(this, 'elsewhere-api', {});
+    new CrowApi(this, 'my-api', {});
   }
 }
 
@@ -115,7 +115,7 @@ class MyAppStack extends cdk.Stack {
     super(scope, id, props);
 
     // The code that defines your stack goes here
-    new CrowApi(this, 'elsewhere-api', {
+    new CrowApi(this, 'my-api', {
       logRetention: logs.RetentionDays.ONE_MONTH,
     });
   }
