@@ -1,0 +1,26 @@
+{
+  "name": "crow-api",
+  "version": "0.1.0",
+  "main": "lib/crow-api.js",
+  "bin": {
+    "crow-api": "bin/crow-api.js"
+  },
+  "scripts": {
+    "build": "echo \"The build step is not required when using JavaScript!\" && exit 0",
+    "cdk": "cdk",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@aws-cdk/assert": "1.107.0",
+    "aws-cdk": "1.107.0",
+    "jest": "^26.4.2"
+  },
+  "dependencies": {
+    "@aws-cdk/aws-apigateway": "^1.107.0",
+    "@aws-cdk/aws-lambda": "^1.107.0",
+    "@aws-cdk/aws-logs": "^1.107.0",
+    "@aws-cdk/aws-s3-assets": "^1.107.0",
+    "@aws-cdk/core": "1.107.0",
+    "fs-extra": "^10.0.0"
+  }
+}
