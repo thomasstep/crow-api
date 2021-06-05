@@ -2,6 +2,10 @@
   "name": "crow-api",
   "version": "0.1.0",
   "main": "lib/crow-api.js",
+  "files": [
+    "lib/",
+    "cdk.json"
+  ],
   "bin": {
     "crow-api": "bin/crow-api.js"
   },
