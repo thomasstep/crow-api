@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "main": "lib/crow-api.js",
   "files": [
+    "README.md",
     "lib/",
     "cdk.json"
   ],
