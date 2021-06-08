@@ -116,7 +116,7 @@ Be care with this configuration item as all configuration here takes precedence 
 
 #### `useAuthorizerLambda`
 
-The `useAuthorizerLambda` boolean tells Crow which methods should first have requests authorized using the authorizer Lambda. This configuration item goes hand-in-hand with the `CrowApi` construct props: [`useAuthorizerLambda`](#useAuthorizerLambda), [`authorizerDirectory`](#authorizerDirectory), and [`authorizerConfiguration`](#authorizerConfiguration). If this configuration item is `false`, the method will be open.
+The `useAuthorizerLambda` boolean tells Crow which methods should first have requests authorized using the authorizer Lambda. This configuration item goes hand-in-hand with the `CrowApi` construct props: [`useAuthorizerLambda`](#useAuthorizerLambda-1), [`authorizerDirectory`](#authorizerDirectory), and [`authorizerConfiguration`](#authorizerConfiguration). If this configuration item is `false`, the method will be open.
 
 ## Crow API Props
 
