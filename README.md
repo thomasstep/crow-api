@@ -84,7 +84,7 @@ The preceding file structure will create an API with the following routes:
 
 There needs to be an `index.js` file inside of a folder named after an HTTP method in order for a path to be created. The `index.js` file needs to export a `handler` method that will process the payload and return.
 
-## Crow API Configuration
+## Crow API Configuration (using `crow.json`)
 
 Crow looks for a special file in verb folders (`get/`, `post/`, etc.) called `crow.json`. This file is meant to contain configuration items that make it easy to pass props and other configuration to the AWS CDK constructs used by Crow. An example `crow.json` file might look something like this
 
@@ -104,7 +104,7 @@ The keys accepted are outlined below.
 
 #### `databaseTables`
 
-The keys of the `databaseTables` object need to also be passed in as props to the `CrowApi` construct (see `databaseTables` under "Crow API Props" for more detail). The key name is what is used to match with the `databaseTables` prop keys and the value is the name of the environment variable which will be present in the Lambda function running your code.
+The keys of the `databaseTables` object need to also be passed in as props to the `CrowApi` construct (see `databaseTables` under "Crow API Props" for more detail). The key name is what is used to match with the `databaseTables` prop keys ([see `databaseTables` below](#databaseTables-1)) and the value is the name of the environment variable which will be present in the Lambda function running your code.
 
 #### `lambdaConfiguration`
 
@@ -116,7 +116,7 @@ Be care with this configuration item as all configuration here takes precedence 
 
 #### `useAuthorizerLambda`
 
-The `useAuthorizerLambda` boolean tells Crow which methods should first have requests authorized using the authorizer Lambda. This configuration item goes hand-in-hand with the `CrowApi` construct props: `useAuthorizerLambda`, `authorizerDirectory`, and `authorizerConfiguration`. If this configuration item is `false`, the method will be open.
+The `useAuthorizerLambda` boolean tells Crow which methods should first have requests authorized using the authorizer Lambda. This configuration item goes hand-in-hand with the `CrowApi` construct props: [`useAuthorizerLambda`](#useAuthorizerLambda), [`authorizerDirectory`](#authorizerDirectory), and [`authorizerConfiguration`](#authorizerConfiguration). If this configuration item is `false`, the method will be open.
 
 ## Crow API Props
 
