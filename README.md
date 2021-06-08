@@ -54,6 +54,8 @@ The following file structure is present in this repository and is meant to be an
 
 ```
 | src/
+  | authorizer/
+    | index.js
   | v1/
     | book/
       | get/
@@ -93,7 +95,8 @@ Crow looks for a special file in verb folders (`get/`, `post/`, etc.) called `cr
   },
   "lambdaConfiguration": {
     "memorySize": 256
-  }
+  },
+  "useAuthorizerLambda": true
 }
 ```
 
@@ -105,11 +108,15 @@ The keys of the `databaseTables` object need to also be passed in as props to th
 
 #### `lambdaConfiguration`
 
-The `lambdaConfiguration` object is passed directly in to the `Lambda.Function` construct which will be running this directories code. Anything available in the [class constructure for the `Function`](https://docs.aws.amazon.com/cdk/api/latest/docs/@aws-cdk_aws-lambda.Function.html) can be overridden. 
+The `lambdaConfiguration` object is passed directly in to the `Lambda.Function` construct which will be running this directories code. Anything available in the [class constructor for the `Function`](https://docs.aws.amazon.com/cdk/api/latest/docs/@aws-cdk_aws-lambda.Function.html) can be overridden.
 
 **Note:**
 
 Be care with this configuration item as all configuration here takes precedence over Crow defaults. I suggest not using this configuration item unless you are experienced with the AWS CDK and Lambda.
+
+#### `useAuthorizerLambda`
+
+The `useAuthorizerLambda` boolean tells Crow which methods should first have requests authorized using the authorizer Lambda. This configuration item goes hand-in-hand with the `CrowApi` construct props: `useAuthorizerLambda`, `authorizerDirectory`, and `authorizerConfiguration`. If this configuration item is `false`, the method will be open.
 
 ## Crow API Props
 
@@ -117,15 +124,34 @@ Crow API takes in a few props to help you customize away from defaults.
 
 #### `sourceDirectory`
 
-By default, Crow walks through the `src/` directory in the root of the repository to determine routes and methods, but you can change the top level directory by passing in the `sourceDirectory` prop. The string passed in should not start with or end with a slash (`/`). For example, `src`, `api/src`, or `source` are all valid options to pass in through that prop.
+By default, Crow walks through the `src` directory in the root of the repository to determine routes and methods, but you can change the top level directory by passing in the `sourceDirectory` prop. The string passed in should not start with or end with a slash (`/`). For example, `src`, `api/src`, or `source` are all valid options to pass in through that prop.
 
 #### `sharedDirectory`
 
-By default, Crow copies the `shared/` directory in the source directory of the repository to all routes and methods, but you can change the name of the shared directory by passing in the `sharedDirectory` prop. The string passed in should not start with or end with a slash (`/`) and must be a direct child of the source directory. For example, `common` or `utils` are valid but `shared/utils` is not.
+By default, Crow copies the `shared` directory in the source directory of the repository to all routes and methods, but you can change the name of the shared directory by passing in the `sharedDirectory` prop. The string passed in should not start with or end with a slash (`/`) and must be a direct child of the source directory. For example, `common` or `utils` are valid but `shared/utils` is not.
 
 **Note:**
 
 Each route is responsible for its own dependencies including those used by the shared code. I know this is weird, but I have not taken the time to come up with a convenient way to merge two modules' dependencies yet. This means there should be no dependencies saved in the shared module, please do all of that in the target module.
+
+#### `useAuthorizerLambda`
+
+Crow will create and attach an authorizer Lambda to specific methods if requested. The `useAuthorizerLambda` prop tells the `CrowApi` Construct that it should create an authorizer Lambda and accepts a boolean value. This is `false` by default.
+
+#### `authorizerDirectory`
+
+Crow will allow for a Lambda authorizer to be created and used by specific methods if requested. The `authorizerDirectory` prop tells Crow where to find the code for the Lambda authorizer **within the source directory which can be specified in the `sourceDirectory` prop**. It expects to find an `index.js` file that exports a `handler` function within the `authorizerDirectory`.
+
+By default, Crow expects to find a directory called `src/authorizer` containing the authorizer Lambda source if the `useAuthorizerLambda` prop is `true`. If a different directory within the source directory should be looked at for this code, it should be specified by passing in a string to the `authorizerDirectory` prop. The string passed in should not start with nor end with a slash (`/`). For example, `auth` or `authLambdaSrc` are valid.
+
+#### `authorizerConfiguration`
+
+The `authorizerConfiguration` prop is passed directly to the `APIGateway.TokenAuthorizer` construct which will be in charge of your API's authorization. Anything available in the [class constructor for the `TokenAuthorizer`](https://docs.aws.amazon.com/cdk/api/latest/docs/@aws-cdk_aws-apigateway.TokenAuthorizer.html) can be overridden.
+
+**Note:**
+
+Be care with this configuration item as all configuration here takes precedence over Crow defaults. I suggest not using this configuration item unless you are experienced with the AWS CDK, API Gateway, and Lambda.
+
 
 #### `createApiKey`
 
