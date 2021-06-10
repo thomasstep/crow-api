@@ -110,6 +110,8 @@ The keys of the `databaseTables` object need to also be passed in as props to th
 
 The `lambdaConfiguration` object is passed directly in to the `Lambda.Function` construct which will be running this directories code. Anything available in the [class constructor for the `Function`](https://docs.aws.amazon.com/cdk/api/latest/docs/@aws-cdk_aws-lambda.Function.html) can be overridden.
 
+For configuration items that are not simple types (i.e. timeout must be type `Duration`) use the [`lambdaConfigurations`](#lambdaConfigurations) prop.
+
 **Note:**
 
 Be care with this configuration item as all configuration here takes precedence over Crow defaults. I suggest not using this configuration item unless you are experienced with the AWS CDK and Lambda.
@@ -221,3 +223,44 @@ new CrowApiStack(app, 'CrowApiStack', {
 ```
 
 It is expected that the `TablesStack` outputs a Dynamo DB table as `this.primaryTable`, which is then passed to Crow through the `databaseTables` prop. For an example of this in action, see the [`tables-stack.js`](./lib/tables-stack.js) file in the `lib/` folder of this repo.
+
+#### `lambdaConfigurations`
+
+This props allows for more complex overrides to Lambda functions. The prop is an object with keys corresponding to the API path of a Lambda function and a value corresponding to the configuration that should be applied to the Lambda. This prop will override any configuration set in the [`lambdaConfiguration`](#lambdaConfiguration) in the `crow.json` file.
+
+An example of this prop might look like the following:
+
+```javascript
+#!/usr/bin/env node
+
+const cdk = require('@aws-cdk/core');
+const { TablesStack } = require('../lib/tables-stack');
+const { CrowApiStack } = require('../lib/crow-api-stack');
+
+const devEnvironment = {
+  account: '712578128737',
+  region: 'us-east-1',
+};
+
+const app = new cdk.App();
+
+const tables = new TablesStack(app, 'TablesStack', {
+  env: devEnvironment,
+});
+
+
+new CrowApiStack(app, 'CrowApiStack', {
+  env: devEnvironment,
+  sourceDirectory: 'src',
+  sharedDirectory: 'utils',
+  createApiKey: true,
+  databaseTables: {
+    primaryTable: tables.primaryTable,
+  },
+  lambdaConfigurations: {
+    '/v1/book/get': {
+      timeout: cdk.Duration.seconds(5),
+    },
+  },
+});
+```
