@@ -224,9 +224,13 @@ new CrowApiStack(app, 'CrowApiStack', {
 
 It is expected that the `TablesStack` outputs a Dynamo DB table as `this.primaryTable`, which is then passed to Crow through the `databaseTables` prop. For an example of this in action, see the [`tables-stack.js`](./lib/tables-stack.js) file in the `lib/` folder of this repo.
 
-#### `lambdaConfigurations`
+#### `apiGatewayConfiguration`
 
-This props allows for more complex overrides to Lambda functions. The prop is an object with keys corresponding to the API path of a Lambda function and a value corresponding to the configuration that should be applied to the Lambda. This prop will override any configuration set in the [`lambdaConfiguration`](#lambdaConfiguration) in the `crow.json` file.
+This props allows for more complex overrides to the API Gateway that fronts your API. The configuration allowed is exactly the same as the [LambdaRestApi props](https://docs.aws.amazon.com/cdk/api/latest/docs/@aws-cdk_aws-apigateway.LambdaRestApi.html).
+
+**Note:**
+
+Be care with this configuration item as all configuration here takes precedence over Crow defaults. I suggest not using this configuration item unless you are experienced with the AWS CDK and API Gateway.
 
 An example of this prop might look like the following:
 
@@ -234,6 +238,7 @@ An example of this prop might look like the following:
 #!/usr/bin/env node
 
 const cdk = require('@aws-cdk/core');
+const apigateway = require('@aws-cdk/aws-apigateway');
 const { TablesStack } = require('../lib/tables-stack');
 const { CrowApiStack } = require('../lib/crow-api-stack');
 
@@ -256,6 +261,53 @@ new CrowApiStack(app, 'CrowApiStack', {
   createApiKey: true,
   databaseTables: {
     primaryTable: tables.primaryTable,
+  },
+  apiGatewayConfiguration: {
+    endpointConfiguration: {
+      types: [apigateway.EndpointType.REGIONAL],
+    },
+  },
+});
+```
+
+#### `lambdaConfigurations`
+
+This props allows for more complex overrides to Lambda functions. The prop is an object with keys corresponding to the API path of a Lambda function and a value corresponding to the configuration that should be applied to the Lambda. This prop will override any configuration set in the [`lambdaConfiguration`](#lambdaConfiguration) in the `crow.json` file. The configuration allowed is exactly the same as the [Lambda Function props](https://docs.aws.amazon.com/cdk/api/latest/docs/@aws-cdk_aws-lambda.Function.html).
+
+An example of this prop might look like the following:
+
+```javascript
+#!/usr/bin/env node
+
+const cdk = require('@aws-cdk/core');
+const apigateway = require('@aws-cdk/aws-apigateway');
+const { TablesStack } = require('../lib/tables-stack');
+const { CrowApiStack } = require('../lib/crow-api-stack');
+
+const devEnvironment = {
+  account: '712578128737',
+  region: 'us-east-1',
+};
+
+const app = new cdk.App();
+
+const tables = new TablesStack(app, 'TablesStack', {
+  env: devEnvironment,
+});
+
+
+new CrowApiStack(app, 'CrowApiStack', {
+  env: devEnvironment,
+  sourceDirectory: 'src',
+  sharedDirectory: 'utils',
+  createApiKey: true,
+  databaseTables: {
+    primaryTable: tables.primaryTable,
+  },
+  apiGatewayConfiguration: {
+    endpointConfiguration: {
+      types: [apigateway.EndpointType.REGIONAL],
+    },
   },
   lambdaConfigurations: {
     '/v1/book/get': {
