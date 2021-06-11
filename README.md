@@ -200,7 +200,7 @@ const { TablesStack } = require('../lib/tables-stack');
 const { CrowApiStack } = require('../lib/crow-api-stack');
 
 const devEnvironment = {
-  account: '712578128737',
+  account: '123456789012',
   region: 'us-east-1',
 };
 
@@ -243,7 +243,7 @@ const { TablesStack } = require('../lib/tables-stack');
 const { CrowApiStack } = require('../lib/crow-api-stack');
 
 const devEnvironment = {
-  account: '712578128737',
+  account: '123456789012',
   region: 'us-east-1',
 };
 
@@ -285,7 +285,7 @@ const { TablesStack } = require('../lib/tables-stack');
 const { CrowApiStack } = require('../lib/crow-api-stack');
 
 const devEnvironment = {
-  account: '712578128737',
+  account: '123456789012',
   region: 'us-east-1',
 };
 
