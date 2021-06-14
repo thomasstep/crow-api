@@ -270,6 +270,10 @@ new CrowApiStack(app, 'CrowApiStack', {
 });
 ```
 
+#### apiGatewayName
+
+This is a simple prop that names the API Gateway. This is how the API will be identified in the AWS console. The value should be a string without spaces and defaults to `crow-api`.
+
 #### `lambdaConfigurations`
 
 This props allows for more complex overrides to Lambda functions. The prop is an object with keys corresponding to the API path of a Lambda function and a value corresponding to the configuration that should be applied to the Lambda. This prop will override any configuration set in the [`lambdaConfiguration`](#lambdaConfiguration) in the `crow.json` file. The configuration allowed is exactly the same as the [Lambda Function props](https://docs.aws.amazon.com/cdk/api/latest/docs/@aws-cdk_aws-lambda.Function.html).

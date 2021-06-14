@@ -24,4 +24,5 @@ new CrowApiStack(app, 'CrowApiStack', {
   databaseTables: {
     primaryTable: tables.primaryTable,
   },
+  apiGatewayName: 'crow-api-custom-name',
 });
