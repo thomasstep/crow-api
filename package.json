@@ -1,6 +1,6 @@
 {
   "name": "crow-api",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "main": "lib/crow-api.js",
   "homepage": "https://github.com/thomasstep/crow-api",
   "repository": "github:thomasstep/crow-api",
