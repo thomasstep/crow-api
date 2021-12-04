@@ -1,12 +1,13 @@
 {
   "name": "crow-api",
-  "version": "0.1.12",
-  "main": "lib/crow-api.js",
+  "version": "1.0.0",
+  "license": "Apache-2.0",
+  "description": "AWS CDK Construct to create a serverless API based on file structure.",
   "homepage": "https://github.com/thomasstep/crow-api",
   "repository": "github:thomasstep/crow-api",
   "bugs": {
-    "url" : "https://github.com/thomasstep/crow-api/issues",
-    "email" : "thomas@thomasstep.com"
+    "url": "https://github.com/thomasstep/crow-api/issues",
+    "email": "thomas@thomasstep.com"
   },
   "author": {
     "name": "Thomas Step",
@@ -14,35 +15,63 @@
     "url": "https://thomasstep.com/"
   },
   "keywords": [
-    "aws",
-    "cdk",
-    "cdk-construct"
+    "awscdk",
+    "aws lambda",
+    "serverless"
   ],
+  "main": "index.js",
   "files": [
     "README.md",
-    "lib/",
+    "index.ts",
     "cdk.json"
   ],
   "bin": {
-    "crow-api": "bin/crow-api.js"
+    "crow-api": "bin/crow-api.ts"
   },
   "scripts": {
-    "build": "echo \"The build step is not required when using JavaScript!\" && exit 0",
-    "cdk": "cdk",
-    "test": "jest"
+    "build": "jsii",
+    "watch": "jsii --watch",
+    "package": "jsii-pacmak",
+    "release": "jsii-release",
+    "test": "jest",
+    "cdk": "cdk"
   },
   "devDependencies": {
-    "@aws-cdk/assert": "1.107.0",
-    "@aws-cdk/aws-dynamodb": "^1.107.0",
-    "aws-cdk": "1.107.0",
-    "jest": "^26.4.2"
+    "@types/jest": "^26.0.10",
+    "@types/node": "10.17.27",
+    "aws-cdk": "2.0.0",
+    "constructs": "10.0.9",
+    "jest": "^26.4.2",
+    "jsii": "^1.46.0",
+    "jsii-config": "^1.46.0",
+    "jsii-pacmak": "^1.46.0",
+    "jsii-release": "^0.2.198",
+    "ts-jest": "^26.2.0",
+    "ts-node": "^9.0.0",
+    "typescript": "~3.9.7"
   },
   "dependencies": {
-    "@aws-cdk/aws-apigateway": "^1.107.0",
-    "@aws-cdk/aws-lambda": "^1.107.0",
-    "@aws-cdk/aws-logs": "^1.107.0",
-    "@aws-cdk/aws-s3-assets": "^1.107.0",
-    "@aws-cdk/core": "1.107.0",
-    "fs-extra": "^10.0.0"
+    "aws-cdk-lib": "2.0.0",
+    "fs-extra": "^10.0.0",
+    "source-map-support": "^0.5.16"
+  },
+  "bundledDependencies": [
+    "fs-extra",
+    "source-map-support"
+  ],
+  "peerDependencies": {
+    "constructs": "^10.0.9"
+  },
+  "stability": "experimental",
+  "types": "index.d.ts",
+  "jsii": {
+    "outdir": "dist",
+    "versionFormat": "full",
+    "targets": {
+      "python": {
+        "distName": "crow-api.core",
+        "module": "crow_api.core"
+      }
+    }
   }
 }
