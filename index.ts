@@ -32,19 +32,6 @@ export interface CrowTablesUsed {
   [tableName: string]: ITable
 }
 
-// export interface ICrowLambdaFunctionProps extends Omit<
-//   lambda.FunctionProps,
-//   'runtime' | 'code' | 'handler'
-// > {
-//   runtime?: lambda.Runtime,
-//   code?: lambda.Code,
-//   handler?: string,
-// }
-
-// export interface ILambdaConfigs {
-//   [lambdapath: string]: ICrowLambdaFunctionProps,
-// }
-
 export interface ICrowApiProps {
   sourceDirectory?: string,
   sharedDirectory?: string,
