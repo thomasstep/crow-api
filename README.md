@@ -6,6 +6,8 @@ Crow API is an AWS CDK construct meant to speed up the time to market for an API
 npm install --save crow-api
 ```
 
+Crow API v0 is based on CDK v1 and Crow API v1 is based on CDK v2.
+
 ## Getting Started
 
 [Start your application as a normal CDK app](https://docs.aws.amazon.com/cdk/latest/guide/getting_started.html)
@@ -270,7 +272,7 @@ new CrowApiStack(app, 'CrowApiStack', {
 });
 ```
 
-#### apiGatewayName
+#### `apiGatewayName`
 
 This is a simple prop that names the API Gateway. This is how the API will be identified in the AWS console. The value should be a string without spaces and defaults to `crow-api`.
 

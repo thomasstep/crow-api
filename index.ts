@@ -1,15 +1,14 @@
-const cdk = require('@aws-cdk/core');
-const { Asset } = require('@aws-cdk/aws-s3-assets');
-const lambda = require('@aws-cdk/aws-lambda');
-// const nodeLambda = require('@aws-cdk/aws-lambda-nodejs');
-const apigateway = require('@aws-cdk/aws-apigateway');
-const logs = require('@aws-cdk/aws-logs');
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import { ITable } from 'aws-cdk-lib/aws-dynamodb';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as apigateway from 'aws-cdk-lib/aws-apigateway';
+import * as logs from 'aws-cdk-lib/aws-logs';
 
 /**
  * For copying shared code to all paths
  */
-const path = require('path');
-const fse = require('fs-extra');
+import * as fse from 'fs-extra';
 
 const DEFAULT_LAMBDA_CODE = `
 exports.handler = async function (event, context, callback) {
@@ -25,15 +24,76 @@ exports.handler = async function (event, context, callback) {
 }
 `;
 
-class CrowApi extends cdk.Construct {
+export interface LambdasByPath {
+  [path: string]: lambda.IFunction,
+}
+
+export interface CrowTablesUsed {
+  [tableName: string]: ITable
+}
+
+// export interface ICrowLambdaFunctionProps extends Omit<
+//   lambda.FunctionProps,
+//   'runtime' | 'code' | 'handler'
+// > {
+//   runtime?: lambda.Runtime,
+//   code?: lambda.Code,
+//   handler?: string,
+// }
+
+// export interface ILambdaConfigs {
+//   [lambdapath: string]: ICrowLambdaFunctionProps,
+// }
+
+export interface ICrowApiProps {
+  sourceDirectory?: string,
+  sharedDirectory?: string,
+  useAuthorizerLambda?: boolean,
+  authorizerDirectory?: string,
+  authorizerConfiguration?: apigateway.TokenAuthorizerProps,
+  createApiKey?: boolean,
+  logRetention?: logs.RetentionDays,
+  databaseTables?: CrowTablesUsed,
+  apiGatewayConfiguration?: string,
+  apiGatewayName?: string,
+  lambdaConfigurations?: any,
+}
+
+interface CrowJsonConfig {
+  databaseTables?: object,
+  lambdaConfiguration?: object,
+  useAuthorizerLambda?: boolean,
+}
+
+interface FSGraphNode {
+  resource: apigateway.IResource,
+  path: string,
+  paths: string[],
+  verbs: string[],
+}
+
+interface FSGraph {
+  [path: string]: FSGraphNode,
+}
+
+interface CrowApiMethodOptions {
+  authorizationType?: apigateway.AuthorizationType,
+  authorizer?: apigateway.IAuthorizer,
+}
+
+export class CrowApi extends Construct {
+  public authorizerLambda!: lambda.IFunction;
+  public gateway!: apigateway.IRestApi;
+  public lambdaFunctions!: LambdasByPath;
+
   /**
    *
    * @param {cdk.Construct} scope
    * @param {string} id
    * @param {cdk.StackProps=} props
    */
-  constructor(scope, id, props) {
-    super(scope, id, props);
+  constructor(scope: Construct, id: string, props: ICrowApiProps) {
+    super(scope, id);
 
     const {
       sourceDirectory = 'src',
@@ -97,7 +157,7 @@ class CrowApi extends cdk.Construct {
       usagePlan.addApiKey(apiKey);
     }
 
-    let tokenAuthorizer;
+    let tokenAuthorizer: apigateway.IAuthorizer;
     if (useAuthorizerLambda) {
       const fullAuthorizerDirectory = `${sourceDirectory}/${authorizerDirectory}`;
 
@@ -124,15 +184,15 @@ class CrowApi extends cdk.Construct {
     }
 
     // Returns child directories given the path of a parent
-    function getDirectoryChildren(parentDirectory) {
+    function getDirectoryChildren(parentDirectory: string) {
       const directories = fse.readdirSync(parentDirectory, { withFileTypes: true })
-        .filter((dirent) => dirent.isDirectory())
-        .map((dirent) => dirent.name);
+        .filter((dirent: any) => dirent.isDirectory())
+        .map((dirent: any) => dirent.name);
       return directories;
     }
 
     // Copies shared directory to a given target directory
-    function copySharedDirectory(targetPath) {
+    function copySharedDirectory(targetPath: string) {
       const sourceSharedDirectory = `${sourceDirectory}/${sharedDirectory}`;
       const targetSharedDirectory = `${targetPath}/${sharedDirectory}`;
       // NOTE this is file I/O so it takes a while
@@ -153,7 +213,7 @@ class CrowApi extends cdk.Construct {
     }
 
     // Given a path, look for crow.json and return configuration
-    function getConfiguration(path) {
+    function getConfiguration(path: string): CrowJsonConfig | object {
       const configurationFile = `${path}/crow.json`;
       try {
         if (fse.existsSync(configurationFile)) {
@@ -168,7 +228,7 @@ class CrowApi extends cdk.Construct {
       return {};
     }
 
-    function bundleLambdaProps(userConfiguration, codePath, apiPath) {
+    function bundleLambdaProps(userConfiguration: CrowJsonConfig, codePath: string, apiPath: string) {
       const {
         lambdaConfiguration,
         databaseTables,
@@ -178,9 +238,8 @@ class CrowApi extends cdk.Construct {
 
       const lambdaProps = {
         runtime: lambda.Runtime.NODEJS_14_X,
-        code: lambda.Code.fromAsset(codePath), // normal Lambda
-        handler: 'index.handler', // normal Lambda
-        // entry: `${codePath}/index.js`, // Nodejs Lambda
+        code: lambda.Code.fromAsset(codePath),
+        handler: 'index.handler',
         logRetention,
         environment: {}, // Initialize this to allow spreading later
         ...lambdaConfiguration, // Let user override any defaults
@@ -188,7 +247,7 @@ class CrowApi extends cdk.Construct {
       };
 
       if (databaseTables) {
-        const tableEnvironmentVariables = {};
+        const tableEnvironmentVariables: any = {};
         Object.entries(databaseTables).forEach(([table, environmentVariableName]) => {
           tableEnvironmentVariables[environmentVariableName] = databaseTablesUsed[table]?.tableName;
         });
@@ -205,7 +264,7 @@ class CrowApi extends cdk.Construct {
       return lambdaProps;
     }
 
-    function grantTablePermissions(newLambda, userConfiguration) {
+    function grantTablePermissions(newLambda: lambda.IFunction, userConfiguration: CrowJsonConfig) {
       const {
         databaseTables,
       } = userConfiguration;
@@ -220,8 +279,8 @@ class CrowApi extends cdk.Construct {
 
     const root = sourceDirectory;
     const verbs = ['get', 'post', 'put', 'delete'];
-    const graph = {};
-    const lambdasByPath = {};
+    const graph: FSGraph = {};
+    const lambdasByPath: LambdasByPath = {};
 
     // Initialize with root
     graph['/'] = {
@@ -231,12 +290,12 @@ class CrowApi extends cdk.Construct {
       verbs: [],
     };
     // First is directory path, second is API path
-    const nodes = [[root, '/']];
+    const nodes: [string, string][] = [[root, '/']];
 
     // BFS that creates API Gateway structure and copies shared code
     while (nodes.length) {
-      const [directoryPath, apiPath] = nodes.shift();
-      const children = getDirectoryChildren(directoryPath);
+      const [directoryPath, apiPath] = nodes.shift() || ['i hate', 'typescript'];
+      const children: any[] = getDirectoryChildren(directoryPath);
       // console.log(`${apiPath}'s children are: ${children}`);
 
       // Don't have to worry about previously visited nodes since this is a file structure...unless there are symlinks?
@@ -251,7 +310,7 @@ class CrowApi extends cdk.Construct {
           // If directory is a verb, we don't traverse it anymore
           //   and need to create an API Gateway method and Lambda
 
-          const configuration = getConfiguration(newDirectoryPath);
+          const configuration: CrowJsonConfig = getConfiguration(newDirectoryPath);
           const lambdaProps = bundleLambdaProps(configuration, newDirectoryPath, newApiPath);
           const { useAuthorizerLambda: authorizerLambdaConfigured } = configuration;
 
@@ -261,7 +320,7 @@ class CrowApi extends cdk.Construct {
 
           grantTablePermissions(newLambda, configuration);
 
-          const methodConfiguration = {};
+          const methodConfiguration: CrowApiMethodOptions = {};
           if (authorizerLambdaConfigured && useAuthorizerLambda) {
             methodConfiguration.authorizationType = apigateway.AuthorizationType.CUSTOM;
             methodConfiguration.authorizer = tokenAuthorizer;
@@ -310,5 +369,3 @@ class CrowApi extends cdk.Construct {
     this.lambdaFunctions = lambdasByPath;
   }
 }
-
-module.exports = { CrowApi }
