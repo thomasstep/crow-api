@@ -5750,19 +5750,11 @@
         "affectsGlobalScope": false
       },
       "./index.ts": {
-        "version": "62d0c43a1240a74cffeba10d6ff465670528ec5b869f618948669d8c936fb302",
+        "version": "7e98a542d894b23fccf011f97479ba9f64196b48f3cc96e333d7a3d6df863a14",
         "affectsGlobalScope": false
       },
       "./types.d.ts": {
         "version": "bb4c8444b23d9015dd6191f09a1f8e9b553182efff6a844322c54219b2e8fb6d",
-        "affectsGlobalScope": false
-      },
-      "./dist/js/package/index.ts": {
-        "version": "62d0c43a1240a74cffeba10d6ff465670528ec5b869f618948669d8c936fb302",
-        "affectsGlobalScope": false
-      },
-      "./lib/crow-api-stack.ts": {
-        "version": "7241b9201df008423c20e44735b5676b86728259d78bc3734dd28f7b82d7bb69",
         "affectsGlobalScope": false
       },
       "./test/crow-api.test.ts": {
@@ -5898,17 +5890,6 @@
       "tsBuildInfoFile": "./tsconfig.tsbuildinfo"
     },
     "referencedMap": {
-      "./dist/js/package/index.ts": [
-        "./node_modules/@types/node/ts3.2/util.d.ts",
-        "./node_modules/@types/node/util.d.ts",
-        "./node_modules/aws-cdk-lib/aws-apigateway/index.d.ts",
-        "./node_modules/aws-cdk-lib/aws-dynamodb/index.d.ts",
-        "./node_modules/aws-cdk-lib/aws-lambda/index.d.ts",
-        "./node_modules/aws-cdk-lib/aws-logs/index.d.ts",
-        "./node_modules/aws-cdk-lib/index.d.ts",
-        "./node_modules/constructs/lib/index.d.ts",
-        "./types.d.ts"
-      ],
       "./index.ts": [
         "./node_modules/@types/node/ts3.2/util.d.ts",
         "./node_modules/@types/node/util.d.ts",
@@ -5919,12 +5900,6 @@
         "./node_modules/aws-cdk-lib/index.d.ts",
         "./node_modules/constructs/lib/index.d.ts",
         "./types.d.ts"
-      ],
-      "./lib/crow-api-stack.ts": [
-        "./node_modules/@types/node/ts3.2/util.d.ts",
-        "./node_modules/@types/node/util.d.ts",
-        "./node_modules/aws-cdk-lib/index.d.ts",
-        "./node_modules/constructs/lib/index.d.ts"
       ],
       "./node_modules/@babel/parser/typings/babel-parser.d.ts": [
         "./node_modules/@babel/types/lib/index.d.ts",

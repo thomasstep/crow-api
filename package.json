@@ -23,7 +23,8 @@
   "files": [
     "README.md",
     "index.ts",
-    "cdk.json"
+    "cdk.json",
+    ".jsii"
   ],
   "bin": {
     "crow-api": "bin/crow-api.ts"
