@@ -1,6 +1,6 @@
 {
   "name": "crow-api",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "license": "Apache-2.0",
   "description": "AWS CDK Construct to create a serverless API based on file structure.",
   "homepage": "https://github.com/thomasstep/crow-api",
@@ -23,7 +23,8 @@
   "files": [
     "README.md",
     "index.ts",
-    "cdk.json"
+    "cdk.json",
+    ".jsii"
   ],
   "bin": {
     "crow-api": "bin/crow-api.ts"

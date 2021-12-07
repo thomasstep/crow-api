@@ -2786,7 +2786,9 @@
   "homepage": "https://github.com/thomasstep/crow-api",
   "jsiiVersion": "1.46.0 (build cd08c55)",
   "keywords": [
-    "awscdk"
+    "awscdk",
+    "aws lambda",
+    "serverless"
   ],
   "license": "Apache-2.0",
   "metadata": {
@@ -2828,7 +2830,7 @@
         },
         "locationInModule": {
           "filename": "index.ts",
-          "line": 95
+          "line": 82
         },
         "parameters": [
           {
@@ -2854,7 +2856,7 @@
       "kind": "class",
       "locationInModule": {
         "filename": "index.ts",
-        "line": 84
+        "line": 71
       },
       "name": "CrowApi",
       "properties": [
@@ -2864,7 +2866,7 @@
           },
           "locationInModule": {
             "filename": "index.ts",
-            "line": 85
+            "line": 72
           },
           "name": "authorizerLambda",
           "type": {
@@ -2877,7 +2879,7 @@
           },
           "locationInModule": {
             "filename": "index.ts",
-            "line": 86
+            "line": 73
           },
           "name": "gateway",
           "type": {
@@ -2890,7 +2892,7 @@
           },
           "locationInModule": {
             "filename": "index.ts",
-            "line": 87
+            "line": 74
           },
           "name": "lambdaFunctions",
           "type": {
@@ -2924,7 +2926,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "index.ts",
-        "line": 48
+        "line": 35
       },
       "name": "ICrowApiProps",
       "properties": [
@@ -2935,7 +2937,7 @@
           },
           "locationInModule": {
             "filename": "index.ts",
-            "line": 57
+            "line": 44
           },
           "name": "apiGatewayConfiguration",
           "optional": true,
@@ -2950,7 +2952,7 @@
           },
           "locationInModule": {
             "filename": "index.ts",
-            "line": 58
+            "line": 45
           },
           "name": "apiGatewayName",
           "optional": true,
@@ -2965,7 +2967,7 @@
           },
           "locationInModule": {
             "filename": "index.ts",
-            "line": 53
+            "line": 40
           },
           "name": "authorizerConfiguration",
           "optional": true,
@@ -2980,7 +2982,7 @@
           },
           "locationInModule": {
             "filename": "index.ts",
-            "line": 52
+            "line": 39
           },
           "name": "authorizerDirectory",
           "optional": true,
@@ -2995,7 +2997,7 @@
           },
           "locationInModule": {
             "filename": "index.ts",
-            "line": 54
+            "line": 41
           },
           "name": "createApiKey",
           "optional": true,
@@ -3010,7 +3012,7 @@
           },
           "locationInModule": {
             "filename": "index.ts",
-            "line": 56
+            "line": 43
           },
           "name": "databaseTables",
           "optional": true,
@@ -3025,7 +3027,7 @@
           },
           "locationInModule": {
             "filename": "index.ts",
-            "line": 59
+            "line": 46
           },
           "name": "lambdaConfigurations",
           "optional": true,
@@ -3040,7 +3042,7 @@
           },
           "locationInModule": {
             "filename": "index.ts",
-            "line": 55
+            "line": 42
           },
           "name": "logRetention",
           "optional": true,
@@ -3055,7 +3057,7 @@
           },
           "locationInModule": {
             "filename": "index.ts",
-            "line": 50
+            "line": 37
           },
           "name": "sharedDirectory",
           "optional": true,
@@ -3070,7 +3072,7 @@
           },
           "locationInModule": {
             "filename": "index.ts",
-            "line": 49
+            "line": 36
           },
           "name": "sourceDirectory",
           "optional": true,
@@ -3085,7 +3087,7 @@
           },
           "locationInModule": {
             "filename": "index.ts",
-            "line": 51
+            "line": 38
           },
           "name": "useAuthorizerLambda",
           "optional": true,
@@ -3112,6 +3114,6 @@
       "symbolId": "index:LambdasByPath"
     }
   },
-  "version": "1.0.0",
-  "fingerprint": "S7wLISeafS3AM9qx6TTnRJBrMyhwLhV79vzVjX4Feoc="
+  "version": "1.0.2",
+  "fingerprint": "F310WkvdvtLYRRILJAQbOxug6ppZW0ILBEcxNxmxUYA="
 }
