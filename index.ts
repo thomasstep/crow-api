@@ -1,6 +1,5 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { ITable } from 'aws-cdk-lib/aws-dynamodb';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as logs from 'aws-cdk-lib/aws-logs';
@@ -25,11 +24,18 @@ exports.handler = async function (event, context, callback) {
 `;
 
 export interface LambdasByPath {
-  [path: string]: lambda.IFunction,
+  [path: string]: lambda.Function,
 }
 
-export interface CrowTablesUsed {
-  [tableName: string]: ITable
+export interface CrowLambdaConfiguration extends lambda.FunctionProps {
+  readonly useAuthorizerLambda: boolean,
+}
+
+export interface CrowLambdaConfigurations {
+  // lambdaByPath should be lambda.FunctionProps
+  // without anything required
+  // but jsii does not allow for Omit type
+  [lambdaByPath: string]: CrowLambdaConfiguration | any,
 }
 
 export interface ICrowApiProps {
@@ -37,19 +43,22 @@ export interface ICrowApiProps {
   sharedDirectory?: string,
   useAuthorizerLambda?: boolean,
   authorizerDirectory?: string,
-  authorizerConfiguration?: apigateway.TokenAuthorizerProps,
+  // authorizerLambdaConfiguration should be lambda.FunctionProps
+  // without anything required
+  // but jsii does not allow for Omit type
+  authorizerLambdaConfiguration?: lambda.FunctionProps | any,
+  // authorizerConfiguration should be apigateway.TokenAuthorizerProps
+  // without anything required
+  // but jsii does not allow for Omit type
+  tokenAuthorizerConfiguration?: apigateway.TokenAuthorizerProps | any,
   createApiKey?: boolean,
   logRetention?: logs.RetentionDays,
-  databaseTables?: CrowTablesUsed,
-  apiGatewayConfiguration?: string,
+  // apiGatwayConfiguration should be apigateway.LambdaRestApiProps
+  // without anything required
+  // but jsii does not allow for Omit type
+  apiGatewayConfiguration?: apigateway.LambdaRestApiProps | any,
   apiGatewayName?: string,
-  lambdaConfigurations?: any,
-}
-
-interface CrowJsonConfig {
-  databaseTables?: object,
-  lambdaConfiguration?: object,
-  useAuthorizerLambda?: boolean,
+  lambdaConfigurations?: CrowLambdaConfigurations,
 }
 
 interface FSGraphNode {
@@ -63,14 +72,10 @@ interface FSGraph {
   [path: string]: FSGraphNode,
 }
 
-interface CrowApiMethodOptions {
-  authorizationType?: apigateway.AuthorizationType,
-  authorizer?: apigateway.IAuthorizer,
-}
-
 export class CrowApi extends Construct {
-  public authorizerLambda!: lambda.IFunction;
-  public gateway!: apigateway.IRestApi;
+  public authorizerLambda!: lambda.Function;
+  public gateway!: apigateway.RestApi;
+  public lambdaLayer!: lambda.LayerVersion | undefined;
   public lambdaFunctions!: LambdasByPath;
 
   /**
@@ -82,25 +87,79 @@ export class CrowApi extends Construct {
   constructor(scope: Construct, id: string, props: ICrowApiProps) {
     super(scope, id);
 
+    // Pulling out props
     const {
       sourceDirectory = 'src',
       sharedDirectory = 'shared',
       useAuthorizerLambda = false,
       authorizerDirectory = 'authorizer',
-      authorizerConfiguration = {},
+      authorizerLambdaConfiguration = {},
+      tokenAuthorizerConfiguration = {},
       createApiKey = false,
       logRetention = logs.RetentionDays.ONE_WEEK,
-      databaseTables: databaseTablesUsed = {},
       apiGatewayConfiguration = {},
       apiGatewayName = 'crow-api',
       lambdaConfigurations = {},
     } = props;
 
-    const specialDirectories = [
+    // Initializing constants
+    const LAMBDA_RUNTIME = lambda.Runtime.NODEJS_14_X;
+    const SPECIAL_DIRECTORIES = [
       sharedDirectory,
       authorizerDirectory,
     ];
 
+    // Helpers functions for constructor
+
+    // Prepares default Lambda props and overrides them with user input
+    function bundleLambdaProps(
+      codePath: string,
+      userConfiguration: CrowLambdaConfiguration | any,
+      sharedLayer: lambda.LayerVersion | undefined,
+    ) {
+      let layers;
+      if (sharedLayer) {
+        const {
+          layers: userLayers = [],
+        } = userConfiguration;
+        layers = [sharedLayer, ...userLayers];
+      }
+
+      const defaultProps = {
+        runtime: LAMBDA_RUNTIME,
+        code: lambda.Code.fromAsset(codePath),
+        handler: 'index.handler',
+        logRetention,
+      };
+
+      const lambdaProps = {
+        ...defaultProps,
+        ...userConfiguration, // Let user configuration override anything except layers
+        layers,
+      }
+
+      return lambdaProps;
+    }
+
+    // Returns child directories given the path of a parent
+    function getDirectoryChildren(parentDirectory: string) {
+      try {
+        const directories = fse.readdirSync(parentDirectory, { withFileTypes: true })
+          .filter((dirent: any) => dirent.isDirectory())
+          .map((dirent: any) => dirent.name);
+        return directories;
+      } catch {
+        /**
+         * The only time I have run into this was when the src/ directory
+         * was empty.
+         * If it is empty, let CDK tree validation tell user that the
+         * REST API does not have any methods.
+         */
+      }
+      return [];
+    }
+
+    // A default Lambda function is needed for the API Gateway
     const defaultLambda = new lambda.Function(this, 'default-crow-lambda', {
       runtime: lambda.Runtime.NODEJS_12_X,
       code: new lambda.InlineCode(DEFAULT_LAMBDA_CODE),
@@ -126,8 +185,8 @@ export class CrowApi extends Construct {
       ...apiGatewayConfiguration,
     });
 
+    // Create API key if desired
     if (createApiKey) {
-      // API Key
       const apiKey = gateway.addApiKey('api-key');
       const usagePlan = new apigateway.UsagePlan(this, 'usage-plan', {
         throttle: {
@@ -144,126 +203,42 @@ export class CrowApi extends Construct {
       usagePlan.addApiKey(apiKey);
     }
 
+    // Create Lambda layer out of shared directory if it exists
+    const sourceSharedDirectory = `${sourceDirectory}/${sharedDirectory}`;
+    let sharedLayer: lambda.LayerVersion | undefined;
+    if (fse.existsSync(sourceSharedDirectory)) {
+      sharedLayer = new lambda.LayerVersion(this, 'shared-layer', {
+        code: lambda.Code.fromAsset(sourceSharedDirectory),
+        compatibleRuntimes: [LAMBDA_RUNTIME],
+        removalPolicy: cdk.RemovalPolicy.DESTROY,
+      });
+
+      this.lambdaLayer = sharedLayer;
+    }
+
+    // Create Lambda authorizer to be used in subsequent Methods
     let tokenAuthorizer: apigateway.IAuthorizer;
     if (useAuthorizerLambda) {
       const fullAuthorizerDirectory = `${sourceDirectory}/${authorizerDirectory}`;
 
-      copySharedDirectory(fullAuthorizerDirectory);
+      const authorizerLambdaProps = bundleLambdaProps(fullAuthorizerDirectory, authorizerLambdaConfiguration, sharedLayer);
 
-      const authorizerLambda = new lambda.Function(this, 'authorizer-lambda', {
-        runtime: lambda.Runtime.NODEJS_14_X,
-        code: lambda.Code.fromAsset(fullAuthorizerDirectory),
-        handler: 'index.handler',
-        logRetention,
-      });
+      const authorizerLambda = new lambda.Function(this, 'authorizer-lambda', authorizerLambdaProps);
       this.authorizerLambda = authorizerLambda;
 
-      const tokenAuthorizerConfiguration = {
+      const bundledTokenAuthConfig = {
         handler: authorizerLambda,
         resultsCacheTtl: cdk.Duration.seconds(3600),
-        ...authorizerConfiguration,
+        ...tokenAuthorizerConfiguration,
       };
       tokenAuthorizer = new apigateway.TokenAuthorizer(
         this,
         'token-authorizer',
-        tokenAuthorizerConfiguration
+        bundledTokenAuthConfig
       );
     }
 
-    // Returns child directories given the path of a parent
-    function getDirectoryChildren(parentDirectory: string) {
-      const directories = fse.readdirSync(parentDirectory, { withFileTypes: true })
-        .filter((dirent: any) => dirent.isDirectory())
-        .map((dirent: any) => dirent.name);
-      return directories;
-    }
-
-    // Copies shared directory to a given target directory
-    function copySharedDirectory(targetPath: string) {
-      const sourceSharedDirectory = `${sourceDirectory}/${sharedDirectory}`;
-      const targetSharedDirectory = `${targetPath}/${sharedDirectory}`;
-      // NOTE this is file I/O so it takes a while
-      fse.emptyDirSync(
-        targetSharedDirectory,
-      );
-      // Copy shared code to target path
-      try {
-        fse.copySync(
-          sourceSharedDirectory,
-          targetSharedDirectory,
-        );
-      } catch (err) {
-        // console.error(err);
-        console.error(`There was an error copying the shared directory to ${targetSharedDirectory}`);
-        // Let this pass and not disrupt the entire application
-      }
-    }
-
-    // Given a path, look for crow.json and return configuration
-    function getConfiguration(path: string): CrowJsonConfig | object {
-      const configurationFile = `${path}/crow.json`;
-      try {
-        if (fse.existsSync(configurationFile)) {
-          const configuration = fse.readJsonSync(configurationFile);
-          return configuration;
-        }
-      } catch (err) {
-        console.error(err);
-        // Don't want to crash synth if config file isn't present
-      }
-
-      return {};
-    }
-
-    function bundleLambdaProps(userConfiguration: CrowJsonConfig, codePath: string, apiPath: string) {
-      const {
-        lambdaConfiguration,
-        databaseTables,
-      } = userConfiguration;
-
-      const propConfiguration = lambdaConfigurations[apiPath] || {};
-
-      const lambdaProps = {
-        runtime: lambda.Runtime.NODEJS_14_X,
-        code: lambda.Code.fromAsset(codePath),
-        handler: 'index.handler',
-        logRetention,
-        environment: {}, // Initialize this to allow spreading later
-        ...lambdaConfiguration, // Let user override any defaults
-        ...propConfiguration, // Let prop configuration override anything
-      };
-
-      if (databaseTables) {
-        const tableEnvironmentVariables: any = {};
-        Object.entries(databaseTables).forEach(([table, environmentVariableName]) => {
-          tableEnvironmentVariables[environmentVariableName] = databaseTablesUsed[table]?.tableName;
-        });
-
-        const environmentWithTables = {
-          // Let any manual environment variables take precedence over
-          //   automated ones
-          ...tableEnvironmentVariables,
-          ...lambdaProps.environment,
-        };
-        lambdaProps.environment = environmentWithTables;
-      }
-
-      return lambdaProps;
-    }
-
-    function grantTablePermissions(newLambda: lambda.IFunction, userConfiguration: CrowJsonConfig) {
-      const {
-        databaseTables,
-      } = userConfiguration;
-
-      if (!databaseTables) {
-        return
-      }
-      Object.keys(databaseTables).forEach((table) => {
-        databaseTablesUsed[table]?.grantFullAccess(newLambda);
-      });
-    }
-
+    // Time to start walking the directories
     const root = sourceDirectory;
     const verbs = ['get', 'post', 'put', 'delete'];
     const graph: FSGraph = {};
@@ -276,16 +251,21 @@ export class CrowApi extends Construct {
       paths: [],
       verbs: [],
     };
-    // First is directory path, second is API path
+    // First element in tuple is directory path, second is API path
     const nodes: [string, string][] = [[root, '/']];
 
-    // BFS that creates API Gateway structure and copies shared code
+    // BFS that creates API Gateway structure using addMethod
     while (nodes.length) {
-      const [directoryPath, apiPath] = nodes.shift() || ['i hate', 'typescript'];
+      // The `|| ['type', 'script']` piece is needed or TS throws a fit
+      const [directoryPath, apiPath] = nodes.shift() || ['type', 'script'];
       const children: any[] = getDirectoryChildren(directoryPath);
+
+      // For debugging purposes
       // console.log(`${apiPath}'s children are: ${children}`);
 
-      // Don't have to worry about previously visited nodes since this is a file structure...unless there are symlinks?
+      // Don't have to worry about previously visited nodes
+      // since this is a file structure
+      // ...unless there are symlinks? Haven't run into that
       children.forEach((child) => {
 
         const newDirectoryPath = `${directoryPath}/${child}`;
@@ -296,21 +276,18 @@ export class CrowApi extends Construct {
         if (verbs.includes(child)) {
           // If directory is a verb, we don't traverse it anymore
           //   and need to create an API Gateway method and Lambda
-
-          const configuration: CrowJsonConfig = getConfiguration(newDirectoryPath);
-          const lambdaProps = bundleLambdaProps(configuration, newDirectoryPath, newApiPath);
-          const { useAuthorizerLambda: authorizerLambdaConfigured } = configuration;
-
-          copySharedDirectory(newDirectoryPath);
+          const userConfiguration = lambdaConfigurations[newApiPath] || {};
+          const lambdaProps = bundleLambdaProps(newDirectoryPath, userConfiguration, sharedLayer);
+          const { useAuthorizerLambda: authorizerLambdaConfigured } = lambdaProps;
 
           const newLambda = new lambda.Function(this, newDirectoryPath, lambdaProps);
 
-          grantTablePermissions(newLambda, configuration);
-
-          const methodConfiguration: CrowApiMethodOptions = {};
+          let methodConfiguration: apigateway.MethodOptions | undefined;
           if (authorizerLambdaConfigured && useAuthorizerLambda) {
-            methodConfiguration.authorizationType = apigateway.AuthorizationType.CUSTOM;
-            methodConfiguration.authorizer = tokenAuthorizer;
+            methodConfiguration = {
+              authorizationType: apigateway.AuthorizationType.CUSTOM,
+              authorizer: tokenAuthorizer,
+            }
           }
 
           graph[apiPath].resource.addMethod(
@@ -321,7 +298,7 @@ export class CrowApi extends Construct {
           graph[apiPath].verbs.push(child);
           lambdasByPath[newApiPath] = newLambda;
 
-        } else if (specialDirectories.includes(child)) {
+        } else if (SPECIAL_DIRECTORIES.includes(child)) {
           // The special directories should not result in an API path
           // This means the API also cannot have a resource with the
           //   same name
@@ -337,7 +314,7 @@ export class CrowApi extends Construct {
           // Add child to parent's paths
           graph[apiPath].paths.push(child);
 
-          // Initialize graph to include child
+          // Initialize graph node to include child
           graph[newApiPath] = {
             resource: newResource,
             path: newDirectoryPath,
@@ -349,6 +326,7 @@ export class CrowApi extends Construct {
       });
     }
 
+    // For debugging purposes
     // console.log(graph);
 
     // Expose API Gateway
