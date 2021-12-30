@@ -27,15 +27,19 @@ export interface LambdasByPath {
   [path: string]: lambda.Function,
 }
 
-export interface CrowLambdaConfiguration extends lambda.FunctionProps {
+export interface CrowLambdaConfigurations {
+  [lambdaByPath: string]: lambda.FunctionProps,
+}
+
+export interface CrowMethodConfiguration extends apigateway.MethodOptions {
   readonly useAuthorizerLambda: boolean,
 }
 
-export interface CrowLambdaConfigurations {
-  // lambdaByPath should be lambda.FunctionProps
+export interface CrowMethodConfigurations {
+  // methodByPath should be lambda.FunctionProps
   // without anything required
   // but jsii does not allow for Omit type
-  [lambdaByPath: string]: CrowLambdaConfiguration | any,
+  [methodByPath: string]: CrowMethodConfiguration,
 }
 
 export interface ICrowApiProps {
@@ -59,6 +63,7 @@ export interface ICrowApiProps {
   apiGatewayConfiguration?: apigateway.LambdaRestApiProps | any,
   apiGatewayName?: string,
   lambdaConfigurations?: CrowLambdaConfigurations,
+  methodConfigurations?: CrowMethodConfigurations,
 }
 
 interface FSGraphNode {
@@ -100,6 +105,7 @@ export class CrowApi extends Construct {
       apiGatewayConfiguration = {},
       apiGatewayName = 'crow-api',
       lambdaConfigurations = {},
+      methodConfigurations = {},
     } = props;
 
     // Initializing constants
@@ -114,7 +120,7 @@ export class CrowApi extends Construct {
     // Prepares default Lambda props and overrides them with user input
     function bundleLambdaProps(
       codePath: string,
-      userConfiguration: CrowLambdaConfiguration | any,
+      userConfiguration: lambda.FunctionProps,
       sharedLayer: lambda.LayerVersion | undefined,
     ) {
       let layers;
@@ -276,15 +282,30 @@ export class CrowApi extends Construct {
         if (verbs.includes(child)) {
           // If directory is a verb, we don't traverse it anymore
           //   and need to create an API Gateway method and Lambda
-          const userConfiguration = lambdaConfigurations[newApiPath] || {};
-          const lambdaProps = bundleLambdaProps(newDirectoryPath, userConfiguration, sharedLayer);
-          const { useAuthorizerLambda: authorizerLambdaConfigured } = lambdaProps;
+          const userLambdaConfiguration = lambdaConfigurations[newApiPath]
+            || {};
+          const lambdaProps = bundleLambdaProps(
+            newDirectoryPath,
+            userLambdaConfiguration,
+            sharedLayer,
+          );
+          const newLambda = new lambda.Function(
+            this,
+            newDirectoryPath,
+            lambdaProps,
+          );
 
-          const newLambda = new lambda.Function(this, newDirectoryPath, lambdaProps);
-
-          let methodConfiguration: apigateway.MethodOptions | undefined;
+          // Pull out useAuthorizerLambda value
+          const {
+            useAuthorizerLambda: authorizerLambdaConfigured,
+            ...userMethodConfiguration
+          } = methodConfigurations[newApiPath] || {};
+          let methodConfiguration = userMethodConfiguration;
+          // If this method should be behind an authorizer Lambda
+          //   construct the methodConfiguration object as such
           if (authorizerLambdaConfigured && useAuthorizerLambda) {
             methodConfiguration = {
+              ...userMethodConfiguration,
               authorizationType: apigateway.AuthorizationType.CUSTOM,
               authorizer: tokenAuthorizer,
             }

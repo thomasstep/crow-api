@@ -5778,7 +5778,7 @@
         "affectsGlobalScope": false
       },
       "./index.ts": {
-        "version": "8a85c2eaa7b6fb93112614e576bb9b4b5163d51c1c11350e00f3765e2b0813b3",
+        "version": "c1c24063658bf86656751ac6f04c18a0812b051baf9ca9db2014d194776b62e0",
         "affectsGlobalScope": false
       },
       "./types.d.ts": {

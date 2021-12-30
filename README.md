@@ -8,6 +8,9 @@ Crow API lets you build an API intuitively based on the file structure of a proj
 | 1                  | 2                 | Not recommended for use |
 | 2                  | 2                 |                         |
 
+Contents:
+1. [Getting Started](#gettingstarted)
+
 ## Getting Started
 
 [Start your application as a normal CDK app](https://docs.aws.amazon.com/cdk/latest/guide/getting_started.html)
@@ -181,7 +184,11 @@ new CrowApiStack(app, 'CrowApiStack', {
 
 #### `lambdaConfigurations`
 
-This props allows for more complex overrides to Lambda functions. The prop is an object with keys corresponding to the API path of a Lambda function and a value corresponding to the configuration that should be applied to the Lambda as well as the key `useAuthorizerLambda` which will invoke the authorizer Lambda whenever the method is called. The configuration allowed is exactly the same as the [Lambda Function props](https://docs.aws.amazon.com/cdk/api/latest/docs/@aws-cdk_aws-lambda.Function.html) plus the `useAuthorizerLambda` boolean.
+This props allows for more complex overrides to Lambda functions. The prop is an object with keys corresponding to the API path of a Lambda function and a value corresponding to the configuration that should be applied to the Lambda. The configuration allowed is exactly the same as the [Lambda Function props](https://docs.aws.amazon.com/cdk/api/latest/docs/@aws-cdk_aws-lambda.Function.html).
+
+**Note:**
+
+Be careful with this configuration item as all configuration here takes precedence over Crow defaults. I suggest not using this configuration item unless you are experienced with the AWS CDK and Lambda.
 
 An example of this prop might look like the following:
 
@@ -203,7 +210,42 @@ new CrowApiStack(app, 'CrowApiStack', {
   lambdaConfigurations: {
     '/v1/book/get': {
       timeout: cdk.Duration.seconds(5),
+    },
+  },
+});
+```
+
+#### `methodConfigurations`
+
+This props allows for more complex overrides to individual methods. The prop is an object with keys corresponding to the API path of a method and a value corresponding to the configuration that should be applied to the method as well as the key `useAuthorizerLambda` which will invoke the authorizer Lambda whenever the method is called. The configuration allowed is exactly the same as [`MethodOptions`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigateway.MethodOptions.html) plus the `useAuthorizerLambda` boolean.
+
+**Note:**
+
+If `createApiKey` is `true`, then the `apiKeyRequired` parameter will need to be set for the methods needing the API key.
+
+An example of this prop might look like the following:
+
+```typescript
+#!/usr/bin/env node
+import 'source-map-support/register';
+import * as cdk from 'aws-cdk-lib';
+import { CrowApiStack } from '../lib/crow-api-stack';
+
+const devEnvironment = {
+  account: '123456789012',
+  region: 'us-east-1',
+};
+
+const app = new cdk.App();
+
+new CrowApiStack(app, 'CrowApiStack', {
+  env: devEnvironment,
+  methodConfigurations: {
+    '/v1/book/get': {
       useAuthorizerLambda: true,
+    },
+    '/v1/book/post': {
+      apiKeyRequired: true,
     },
   },
 });
