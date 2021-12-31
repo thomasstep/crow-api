@@ -9,7 +9,25 @@ Crow API lets you build an API intuitively based on the file structure of a proj
 | 2                  | 2                 |                         |
 
 Contents:
-1. [Getting Started](#gettingstarted)
+- [Getting Started](#getting-started)
+- [Example File Structure](#example-file-structure)
+- [Crow API Props](#crow-api-props)
+  - [`sourceDirectory`](#sourcedirectory)
+  - [`sharedDirectory`](#shareddirectory)
+  - [`useAuthorizerLambda`](#useauthorizerlambda)
+  - [`authorizerDirectory`](#authorizerdirectory)
+  - [`authorizerLambdaConfiguration`](#authorizerlambdaconfiguration)
+  - [`tokenAuthorizerConfiguration`](#tokenauthorizerconfiguration)
+  - [`createApiKey`](#createapikey)
+  - [`logRetention`](#logretention)
+  - [`apiGatewayConfiguration`](#apigatewayconfiguration)
+  - [`lambdaConfigurations`](#lambdaconfigurations)
+  - [`methodConfigurations`](#methodconfigurations)
+- [Properties](#properties)
+  - [`authorizerLambda`](#authorizerlambda)
+  - [`gateway`](#gateway)
+  - [`lambdaLayer`](#lambdalayer)
+  - [`lambdaFunctions`](#lambdafunctions)
 
 ## Getting Started
 
@@ -143,10 +161,6 @@ By default, Crow does not create an API key associated with the API. If an API k
 #### `logRetention`
 
 By default, Crow creates log groups for resources it creates and sets the log retention to one week. If a different retention is desired pass in the `logRetention` prop of [enum type `RetentionDays`](https://docs.aws.amazon.com/cdk/api/latest/docs/@aws-cdk_aws-logs.RetentionDays.html).
-
-#### `apiGatewayName`
-
-This is a simple prop that names the API Gateway. This is how the API will be identified in the AWS console. The value should be a string without spaces and defaults to `crow-api`.
 
 #### `apiGatewayConfiguration`
 

@@ -7227,8 +7227,8 @@
         "affectsGlobalScope": false
       },
       "./index.ts": {
-        "version": "c1c24063658bf86656751ac6f04c18a0812b051baf9ca9db2014d194776b62e0",
-        "signature": "ef849d1587348bbf98eaf30e2df97996390dd71ffc9a2ab14cbb515c53265026",
+        "version": "c15f4bcfdde8a230cc8b6bad34a12cb68db54101dccf0cdb6a02c86fae5f2aca",
+        "signature": "4e6be3d27b846f9f5aff3b37f20b461c5879edf5839e837dea009938519f4d23",
         "affectsGlobalScope": false
       },
       "./types.d.ts": {
@@ -7242,7 +7242,7 @@
         "affectsGlobalScope": false
       },
       "./test/crow-api.test.ts": {
-        "version": "bce785c4f2b2525959e280855e0cde444d5040638990a0b8c9303c97a04d19ea",
+        "version": "216f675c25f53d2cd0092b94b03f17a0abce33d6c029e4f58847267d52fb01d2",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
         "affectsGlobalScope": false
       },
@@ -17884,10 +17884,11 @@
       ],
       "./test/crow-api.test.ts": [
         "./lib/crow-api-stack.ts",
-        "./node_modules/@types/node/console.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts",
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/aws-cdk-lib/assertions/index.d.ts",
+        "./node_modules/aws-cdk-lib/aws-lambda/index.d.ts",
+        "./node_modules/aws-cdk-lib/aws-logs/index.d.ts",
         "./node_modules/aws-cdk-lib/index.d.ts"
       ],
       "./types.d.ts": [

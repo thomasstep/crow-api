@@ -61,7 +61,6 @@ export interface ICrowApiProps {
   // without anything required
   // but jsii does not allow for Omit type
   apiGatewayConfiguration?: apigateway.LambdaRestApiProps | any,
-  apiGatewayName?: string,
   lambdaConfigurations?: CrowLambdaConfigurations,
   methodConfigurations?: CrowMethodConfigurations,
 }
@@ -103,7 +102,6 @@ export class CrowApi extends Construct {
       createApiKey = false,
       logRetention = logs.RetentionDays.ONE_WEEK,
       apiGatewayConfiguration = {},
-      apiGatewayName = 'crow-api',
       lambdaConfigurations = {},
       methodConfigurations = {},
     } = props;
@@ -167,7 +165,7 @@ export class CrowApi extends Construct {
 
     // A default Lambda function is needed for the API Gateway
     const defaultLambda = new lambda.Function(this, 'default-crow-lambda', {
-      runtime: lambda.Runtime.NODEJS_12_X,
+      runtime: LAMBDA_RUNTIME,
       code: new lambda.InlineCode(DEFAULT_LAMBDA_CODE),
       handler: 'index.handler',
       logRetention,
@@ -179,7 +177,7 @@ export class CrowApi extends Construct {
     });
 
     // The API Gateway itself
-    const gateway = new apigateway.LambdaRestApi(this, apiGatewayName, {
+    const gateway = new apigateway.LambdaRestApi(this, 'api-gateway', {
       handler: defaultLambda,
       proxy: false,
       deploy: true,
