@@ -34,7 +34,7 @@
     "watch": "jsii --watch",
     "package": "jsii-pacmak",
     "release": "jsii-release",
-    "test": "jest",
+    "test": "tsc && jest",
     "cdk": "cdk"
   },
   "devDependencies": {
