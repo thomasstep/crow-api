@@ -1,6 +1,7 @@
 import * as cdk from 'aws-cdk-lib';
-import * as logs from 'aws-cdk-lib/aws-logs';
+import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as logs from 'aws-cdk-lib/aws-logs';
 import { Template } from 'aws-cdk-lib/assertions';
 // import { assert } from 'console';
 import * as CrowApi from '../lib/crow-api-stack';
@@ -70,10 +71,29 @@ describe('Successful creation', () => {
           memorySize: 1024,
         },
       },
+      models: [
+        {
+          modelName: 'authorsPost',
+          schema: {
+            schema: apigateway.JsonSchemaVersion.DRAFT4,
+            title: '/v1/authors/post',
+            type: apigateway.JsonSchemaType.OBJECT,
+            required: ['name'],
+            properties: {
+              name: {
+                type: apigateway.JsonSchemaType.STRING,
+              },
+            },
+          },
+        },
+      ],
       methodConfigurations: {
         '/v1/authors/get': {},
         '/v1/authors/post': {
           apiKeyRequired: true,
+          requestModels: {
+            'application/json': 'authorsPost',
+          },
         },
         '/v1/book/get': {
           useAuthorizerLambda: true,
@@ -236,6 +256,17 @@ describe('Successful creation', () => {
     const v1BookPostLambdaLogicalId = logicalIdFromResource(v1BookPostLambda);
     const v1ChaptersGetLambdaLogicalId = logicalIdFromResource(v1ChaptersGetLambda);
 
+    // Find Models
+    const authorsPostModel = template.findResources('AWS::ApiGateway::Model', {
+      Properties: {
+        RestApiId: {
+          Ref: restApiLogicalId,
+        },
+        Name: 'authorsPost',
+      },
+    });
+    const authorsPostModelLogicalId = logicalIdFromResource(authorsPostModel);
+
     // Test that methods have the correct configuration passed down
     //   and are mapping to the correct Lambda
     template.hasResourceProperties('AWS::ApiGateway::Method', {
@@ -297,6 +328,11 @@ describe('Successful creation', () => {
               '/invocations',
             ],
           ],
+        },
+      },
+      RequestModels: {
+        'application/json': {
+          Ref: authorsPostModelLogicalId,
         },
       },
     });

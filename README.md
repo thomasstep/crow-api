@@ -20,9 +20,12 @@ Contents:
   - [`tokenAuthorizerConfiguration`](#tokenauthorizerconfiguration)
   - [`createApiKey`](#createapikey)
   - [`logRetention`](#logretention)
+  - [`apiGatewayName`](#apigatewayname)
   - [`apiGatewayConfiguration`](#apigatewayconfiguration)
   - [`lambdaConfigurations`](#lambdaconfigurations)
   - [`methodConfigurations`](#methodconfigurations)
+  - [`models`](#models)
+  - [`requestValidators`](#requestValidators)
 - [Properties](#properties)
   - [`authorizerLambda`](#authorizerlambda)
   - [`gateway`](#gateway)
@@ -31,7 +34,7 @@ Contents:
 
 ## Getting Started
 
-[Start your application as a normal CDK app](https://docs.aws.amazon.com/cdk/latest/guide/getting_started.html)
+[Start your application as a normal CDK app](https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html)
 
 ```sh
 npm install -g aws-cdk
@@ -143,11 +146,11 @@ By default, Crow expects to find a directory called `src/authorizer` containing 
 
 #### `authorizerLambdaConfiguration`
 
-The `authorizerLambdaConfiguration` prop is passed directly to the Lambda functions which will be in charge of your API's authorization. The configuration allowed is exactly the same as the [Lambda Function props](https://docs.aws.amazon.com/cdk/api/latest/docs/@aws-cdk_aws-lambda.Function.html).
+The `authorizerLambdaConfiguration` prop is passed directly to the Lambda functions which will be in charge of your API's authorization. The configuration allowed is exactly the same as the [Lambda Function props](https://docs.aws.amazon.com/cdk/api/v2//docs/aws-cdk-lib.aws_lambda.Function.html).
 
 #### `tokenAuthorizerConfiguration`
 
-The `tokenAuthorizerConfiguration` prop is passed directly to the `APIGateway.TokenAuthorizer` construct which will be in charge of your API's authorization. Anything available in the [class constructor for the `TokenAuthorizer`](https://docs.aws.amazon.com/cdk/api/latest/docs/@aws-cdk_aws-apigateway.TokenAuthorizer.html) can be overridden.
+The `tokenAuthorizerConfiguration` prop is passed directly to the `APIGateway.TokenAuthorizer` construct which will be in charge of your API's authorization. Anything available in the [class constructor for the `TokenAuthorizer`](https://docs.aws.amazon.com/cdk/api/v2//docs/aws-cdk-lib.aws_apigateway.TokenAuthorizer.html) can be overridden.
 
 **Note:**
 
@@ -160,11 +163,11 @@ By default, Crow does not create an API key associated with the API. If an API k
 
 #### `logRetention`
 
-By default, Crow creates log groups for resources it creates and sets the log retention to one week. If a different retention is desired pass in the `logRetention` prop of [enum type `RetentionDays`](https://docs.aws.amazon.com/cdk/api/latest/docs/@aws-cdk_aws-logs.RetentionDays.html).
+By default, Crow creates log groups for resources it creates and sets the log retention to one week. If a different retention is desired pass in the `logRetention` prop of [enum type `RetentionDays`](https://docs.aws.amazon.com/cdk/api/v2//docs/aws-cdk-lib.aws_logs.RetentionDays.html).
 
 #### `apiGatewayConfiguration`
 
-This props allows for more complex overrides to the API Gateway that fronts your API. The configuration allowed is exactly the same as the [LambdaRestApi props](https://docs.aws.amazon.com/cdk/api/latest/docs/@aws-cdk_aws-apigateway.LambdaRestApi.html).
+This props allows for more complex overrides to the API Gateway that fronts your API. The configuration allowed is exactly the same as the [RestApi props](https://docs.aws.amazon.com/cdk/api/v2//docs/aws-cdk-lib.aws_apigateway.RestApi.html).
 
 **Note:**
 
@@ -196,9 +199,13 @@ new CrowApiStack(app, 'CrowApiStack', {
 });
 ```
 
+#### `apiGatewayName`
+
+This is a simple prop that names the API Gateway. This is how the API will be identified in the AWS console. The value should be a string without spaces and defaults to `crow-api`.
+
 #### `lambdaConfigurations`
 
-This props allows for more complex overrides to Lambda functions. The prop is an object with keys corresponding to the API path of a Lambda function and a value corresponding to the configuration that should be applied to the Lambda. The configuration allowed is exactly the same as the [Lambda Function props](https://docs.aws.amazon.com/cdk/api/latest/docs/@aws-cdk_aws-lambda.Function.html).
+This props allows for more complex overrides to Lambda functions. The prop is an object with keys corresponding to the API path of a Lambda function and a value corresponding to the configuration that should be applied to the Lambda. The configuration allowed is exactly the same as the [Lambda Function props](https://docs.aws.amazon.com/cdk/api/v2//docs/aws-cdk-lib.aws_lambda.Function.html).
 
 **Note:**
 
@@ -231,7 +238,9 @@ new CrowApiStack(app, 'CrowApiStack', {
 
 #### `methodConfigurations`
 
-This props allows for more complex overrides to individual methods. The prop is an object with keys corresponding to the API path of a method and a value corresponding to the configuration that should be applied to the method as well as the key `useAuthorizerLambda` which will invoke the authorizer Lambda whenever the method is called. The configuration allowed is exactly the same as [`MethodOptions`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigateway.MethodOptions.html) plus the `useAuthorizerLambda` boolean.
+This prop allows for more complex overrides to individual methods. The prop is an object with keys corresponding to the API path of a method and a value corresponding to the configuration that should be applied to the method as well as the key `useAuthorizerLambda` which will invoke the authorizer Lambda whenever the method is called. The configuration allowed is almost exactly the same as [`MethodOptions`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigateway.MethodOptions.html) plus the `useAuthorizerLambda` boolean.
+
+The differences between `MethodOptions` and Crow's `CrowMethodConfiguration` (the type for this prop) is that any value referencing `{ [string]: IModel }` (`MethodOptions.requestModels` and `MethodResponse.responseModels`) has been changed to `{ [string]: string }`. The strings that are passed should correspond with the `modelName`s used in the [`models`](#models) prop (see next section). The `IModel` is referenced using the passed in string/`modelName`.
 
 **Note:**
 
@@ -254,7 +263,29 @@ const app = new cdk.App();
 
 new CrowApiStack(app, 'CrowApiStack', {
   env: devEnvironment,
+  models: [
+    {
+      modelName: 'authorsPost',
+      schema: {
+        schema: apigateway.JsonSchemaVersion.DRAFT4,
+        title: '/v1/authors/post',
+        type: apigateway.JsonSchemaType.OBJECT,
+        required: ['name'],
+        properties: {
+          name: {
+            type: apigateway.JsonSchemaType.STRING,
+          },
+        },
+      },
+    },
+  ],
   methodConfigurations: {
+    '/v1/authors/post': {
+      apiKeyRequired: true,
+      requestModels: {
+        'application/json': 'authorsPost',
+      },
+    },
     '/v1/book/get': {
       useAuthorizerLambda: true,
     },
@@ -264,6 +295,13 @@ new CrowApiStack(app, 'CrowApiStack', {
   },
 });
 ```
+
+#### `models`
+
+This prop helps set up the `Model`s used in `methodConfiguration` above. It is an array of `CrowModelOptions` which are the same as [`MethodOptions`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigateway.ModelOptions.html) except that the `modelName` is required. The `Model`s will receive an ID equal to its `modelName` which is why that prop is required. The `IModel` can then be referenced in `methodConfigurations` using its `modelName`.
+
+#### `requestValidators`
+This prop helps set up the `RequestValidator`s used in `methodConfiguration` above. It is an array of `CrowRequestValidatorOptions` which are the same as [`RequestValidatorOptions`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigateway.RequestValidatorOptions.html) except that the `requestValidatorName` is required. The `RequestValidator`s will receive an ID equal to its `requestValidatorName` which is why that prop is required. The `IRequestValidator` can then be referenced in `methodConfigurations` using its `requestValidatorName`.
 
 ## Properties
 

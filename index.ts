@@ -9,20 +9,6 @@ import * as logs from 'aws-cdk-lib/aws-logs';
  */
 import * as fse from 'fs-extra';
 
-const DEFAULT_LAMBDA_CODE = `
-exports.handler = async function (event, context, callback) {
-  try {
-    const data = {
-      statusCode: 201,
-    };
-    return data;
-  } catch (uncaughtError) {
-    console.error(uncaughtError);
-    throw uncaughtError;
-  }
-}
-`;
-
 export interface LambdasByPath {
   [path: string]: lambda.Function,
 }
@@ -31,8 +17,42 @@ export interface CrowLambdaConfigurations {
   [lambdaByPath: string]: lambda.FunctionProps,
 }
 
-export interface CrowMethodConfiguration extends apigateway.MethodOptions {
-  readonly useAuthorizerLambda: boolean,
+// Same as ModelOptions but modelName is required (used as ID)
+export interface CrowModelOptions {
+  readonly schema: apigateway.JsonSchema,
+  readonly modelName: string,
+  readonly contentType?: string,
+  readonly description?: string,
+}
+
+// Same as RequestValidatorOptions but requestValidatorName is required (used as ID)
+export interface CrowRequestValidatorOptions {
+  readonly requestValidatorName: string,
+  readonly validateRequestBody?: boolean,
+  readonly validateRequestParameters?: boolean,
+}
+
+export interface CrowMethodResponse {
+  readonly statusCode: string,
+  // Takes a string which is matched with the modelName
+  readonly responseModels?: { [contentType: string]: string },
+  readonly responseParameters?: { [param: string]: boolean }
+}
+
+export interface CrowMethodConfiguration {
+  // Redefining MethodOptions since Omit is not supported
+  readonly apiKeyRequired?: boolean,
+  readonly authorizationScopes?: string[],
+  readonly authorizationType?: apigateway.AuthorizationType,
+  readonly authorizer?: apigateway.IAuthorizer,
+  readonly methodResponses?: CrowMethodResponse[],
+  readonly operationName?: string,
+  // Takes a string which is matched with the modelName
+  readonly requestModels?: { [contentType: string]: string },
+  readonly requestParameters?: { [param: string]: boolean },
+  // requestValidator?: apigateway.IRequestValidator is not allowed on purpose
+  readonly requestValidatorOptions?: apigateway.RequestValidatorOptions,
+  readonly useAuthorizerLambda?: boolean,
 }
 
 export interface CrowMethodConfigurations {
@@ -42,27 +62,30 @@ export interface CrowMethodConfigurations {
   [methodByPath: string]: CrowMethodConfiguration,
 }
 
-export interface ICrowApiProps {
-  sourceDirectory?: string,
-  sharedDirectory?: string,
-  useAuthorizerLambda?: boolean,
-  authorizerDirectory?: string,
+export interface CrowApiProps {
+  readonly sourceDirectory?: string,
+  readonly sharedDirectory?: string,
+  readonly useAuthorizerLambda?: boolean,
+  readonly authorizerDirectory?: string,
   // authorizerLambdaConfiguration should be lambda.FunctionProps
   // without anything required
   // but jsii does not allow for Omit type
-  authorizerLambdaConfiguration?: lambda.FunctionProps | any,
+  readonly authorizerLambdaConfiguration?: lambda.FunctionProps | any,
   // authorizerConfiguration should be apigateway.TokenAuthorizerProps
   // without anything required
   // but jsii does not allow for Omit type
-  tokenAuthorizerConfiguration?: apigateway.TokenAuthorizerProps | any,
-  createApiKey?: boolean,
-  logRetention?: logs.RetentionDays,
+  readonly tokenAuthorizerConfiguration?: apigateway.TokenAuthorizerProps | any,
+  readonly createApiKey?: boolean,
+  readonly logRetention?: logs.RetentionDays,
   // apiGatwayConfiguration should be apigateway.LambdaRestApiProps
   // without anything required
   // but jsii does not allow for Omit type
-  apiGatewayConfiguration?: apigateway.LambdaRestApiProps | any,
-  lambdaConfigurations?: CrowLambdaConfigurations,
-  methodConfigurations?: CrowMethodConfigurations,
+  readonly apiGatewayConfiguration?: apigateway.RestApiProps | any,
+  readonly apiGatewayName?: string,
+  readonly lambdaConfigurations?: CrowLambdaConfigurations,
+  readonly models?: CrowModelOptions[],
+  readonly requestValidators?: CrowRequestValidatorOptions[],
+  readonly methodConfigurations?: CrowMethodConfigurations,
 }
 
 interface FSGraphNode {
@@ -88,7 +111,7 @@ export class CrowApi extends Construct {
    * @param {string} id
    * @param {cdk.StackProps=} props
    */
-  constructor(scope: Construct, id: string, props: ICrowApiProps) {
+  constructor(scope: Construct, id: string, props: CrowApiProps) {
     super(scope, id);
 
     // Pulling out props
@@ -102,7 +125,10 @@ export class CrowApi extends Construct {
       createApiKey = false,
       logRetention = logs.RetentionDays.ONE_WEEK,
       apiGatewayConfiguration = {},
+      apiGatewayName = 'crow-api',
       lambdaConfigurations = {},
+      models = [],
+      requestValidators = [],
       methodConfigurations = {},
     } = props;
 
@@ -163,23 +189,13 @@ export class CrowApi extends Construct {
       return [];
     }
 
-    // A default Lambda function is needed for the API Gateway
-    const defaultLambda = new lambda.Function(this, 'default-crow-lambda', {
-      runtime: LAMBDA_RUNTIME,
-      code: new lambda.InlineCode(DEFAULT_LAMBDA_CODE),
-      handler: 'index.handler',
-      logRetention,
-    });
-
     // API Gateway log group
     const gatewayLogGroup = new logs.LogGroup(this, 'api-access-logs', {
       retention: logs.RetentionDays.ONE_WEEK,
     });
 
     // The API Gateway itself
-    const gateway = new apigateway.LambdaRestApi(this, 'api-gateway', {
-      handler: defaultLambda,
-      proxy: false,
+    const gateway = new apigateway.RestApi(this, apiGatewayName, {
       deploy: true,
       deployOptions: {
         loggingLevel: apigateway.MethodLoggingLevel.ERROR,
@@ -187,6 +203,17 @@ export class CrowApi extends Construct {
       },
       apiKeySourceType: createApiKey ? apigateway.ApiKeySourceType.HEADER : undefined,
       ...apiGatewayConfiguration,
+    });
+
+    const createdModels: { [modelName: string]: apigateway.IModel } = {};
+    models.forEach((model: CrowModelOptions) => {
+      // modelName is used as ID and can now be used for referencing model in method options
+      createdModels[model.modelName] = gateway.addModel(model.modelName, model);
+    });
+    const createdRequestValidators: { [requestValidatorsName: string]: apigateway.IRequestValidator } = {};
+    requestValidators.forEach((requestValidator: CrowRequestValidatorOptions) => {
+      // requestValidatorName is used as ID and can now be used for referencing model in method options
+      createdRequestValidators[requestValidator.requestValidatorName] = gateway.addRequestValidator(requestValidator.requestValidatorName, requestValidator);
     });
 
     // Create API key if desired
@@ -293,12 +320,50 @@ export class CrowApi extends Construct {
             lambdaProps,
           );
 
-          // Pull out useAuthorizerLambda value
+          // Pull out useAuthorizerLambda value and the tweaked model values
           const {
-            useAuthorizerLambda: authorizerLambdaConfigured,
+            useAuthorizerLambda: authorizerLambdaConfigured = false,
+            requestModels: crowRequestModels,
+            methodResponses: crowMethodResponses,
             ...userMethodConfiguration
           } = methodConfigurations[newApiPath] || {};
-          let methodConfiguration = userMethodConfiguration;
+
+          // Map models
+          const requestModels: { [contentType: string]: apigateway.IModel } = {};
+          if (crowRequestModels) {
+            Object.entries(crowRequestModels).forEach(([contentType, modelName]) => {
+              requestModels[contentType] = createdModels[modelName];
+            });
+          }
+
+          const methodResponses: apigateway.MethodResponse[] = [];
+          if (crowMethodResponses && crowMethodResponses.length > 0) {
+            crowMethodResponses.forEach((crowMethodResponse) => {
+              const responseModels: { [contentType: string]: apigateway.IModel } = {};
+              if (crowMethodResponse.responseModels) {
+                const crowResponseModels = crowMethodResponse.responseModels;
+                Object.entries(crowResponseModels).forEach(([contentType, modelName]) => {
+                  responseModels[contentType] = createdModels[modelName];
+                });
+              }
+
+              const {
+                statusCode,
+                responseParameters,
+              } = crowMethodResponse;
+              methodResponses.push({
+                statusCode,
+                responseParameters,
+                responseModels,
+              });
+            })
+          }
+
+          let methodConfiguration = {
+            ...userMethodConfiguration,
+            requestModels,
+            methodResponses,
+          };
           // If this method should be behind an authorizer Lambda
           //   construct the methodConfiguration object as such
           if (authorizerLambdaConfigured && useAuthorizerLambda) {
@@ -306,6 +371,8 @@ export class CrowApi extends Construct {
               ...userMethodConfiguration,
               authorizationType: apigateway.AuthorizationType.CUSTOM,
               authorizer: tokenAuthorizer,
+              requestModels,
+              methodResponses,
             }
           }
 
