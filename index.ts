@@ -105,6 +105,8 @@ export class CrowApi extends Construct {
   public gateway!: apigateway.RestApi;
   public lambdaLayer!: lambda.LayerVersion | undefined;
   public lambdaFunctions!: LambdasByPath;
+  public models!: { [modelName: string]: apigateway.IModel };
+  public requestValidators!: { [requestValidatorsName: string]: apigateway.IRequestValidator };
 
   /**
    *
@@ -421,5 +423,7 @@ export class CrowApi extends Construct {
     // Expose API Gateway
     this.gateway = gateway;
     this.lambdaFunctions = lambdasByPath;
+    this.models = createdModels;
+    this.requestValidators = createdRequestValidators;
   }
 }

@@ -31,6 +31,8 @@ Contents:
   - [`gateway`](#gateway)
   - [`lambdaLayer`](#lambdalayer)
   - [`lambdaFunctions`](#lambdafunctions)
+  - [`models`](#models)
+  - [`requestValidators`](#requestValidators)
 
 ## Getting Started
 
@@ -301,6 +303,7 @@ new CrowApiStack(app, 'CrowApiStack', {
 This prop helps set up the `Model`s used in `methodConfiguration` above. It is an array of `CrowModelOptions` which are the same as [`MethodOptions`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigateway.ModelOptions.html) except that the `modelName` is required. The `Model`s will receive an ID equal to its `modelName` which is why that prop is required. The `IModel` can then be referenced in `methodConfigurations` using its `modelName`.
 
 #### `requestValidators`
+
 This prop helps set up the `RequestValidator`s used in `methodConfiguration` above. It is an array of `CrowRequestValidatorOptions` which are the same as [`RequestValidatorOptions`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigateway.RequestValidatorOptions.html) except that the `requestValidatorName` is required. The `RequestValidator`s will receive an ID equal to its `requestValidatorName` which is why that prop is required. The `IRequestValidator` can then be referenced in `methodConfigurations` using its `requestValidatorName`.
 
 ## Properties
@@ -345,3 +348,11 @@ export class YourAppStack extends Stack {
   }
 }
 ```
+
+#### `models`
+
+This is an object with keys being the `modelName`s and values being the `IModel`s created.
+
+#### `requestValidators`
+
+This is an object with keys being the `requestValidatorName`s and values being the `IRequestValidator`s created.
