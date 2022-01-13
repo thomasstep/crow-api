@@ -240,7 +240,7 @@ new CrowApiStack(app, 'CrowApiStack', {
 
 This prop allows for more complex overrides to individual methods. The prop is an object with keys corresponding to the API path of a method and a value corresponding to the configuration that should be applied to the method as well as the key `useAuthorizerLambda` which will invoke the authorizer Lambda whenever the method is called. The configuration allowed is almost exactly the same as [`MethodOptions`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigateway.MethodOptions.html) plus the `useAuthorizerLambda` boolean.
 
-The differences between `MethodOptions` and Crow's `CrowMethodConfiguration` (the type for this prop) is that any value referencing `{ [string]: IModel }` (`MethodOptions.requestModels` and `MethodResponse.responseModels`) has been changed to `{ [string]: string }`. The strings that are passed should correspond with the `modelName`s used in the [`models`](#models) prop (see next section). The `IModel` is referenced using the passed in string/`modelName`.
+The differences between `MethodOptions` and Crow's `CrowMethodConfiguration` (the type for this prop) is that any value referencing `{ [string]: IModel }` (`MethodOptions.requestModels` and `MethodResponse.responseModels`) has been changed to `{ [string]: string }` and similarly `requestValidator` has been changed from `IRequestValidator` to `string`. The strings that are passed should correspond with the `modelName`s or `requestValidatorName`s used in the [`models`](#models) and [`requestValidators`](#requestvalidators) props (see next sections).
 
 **Note:**
 

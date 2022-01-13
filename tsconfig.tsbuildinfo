@@ -7222,8 +7222,8 @@
         "affectsGlobalScope": false
       },
       "./index.ts": {
-        "version": "59e809e2bdfec9012c3ddd9ebfcf2af81d31de7a346144f88cdb285a159fcbc9",
-        "signature": "4e6be3d27b846f9f5aff3b37f20b461c5879edf5839e837dea009938519f4d23",
+        "version": "b3df007c74685cca998700fbf5a368b95c9b39b1b9ee148d22d5310ece249c52",
+        "signature": "f3a00b4a805bae86e0cadf00d8d9f834ff26ff55a46987c2aa15495640b01ba3",
         "affectsGlobalScope": false
       },
       "./types.d.ts": {
@@ -7237,7 +7237,7 @@
         "affectsGlobalScope": false
       },
       "./test/crow-api.test.ts": {
-        "version": "1510a8e10ba1a9be06ad932b85bf4e47ad0d5480f4b9a251e6588ef9f3b4f4fd",
+        "version": "bd53adc655ca16ec98e9badda3ab5b2ccc3fd5f3eb5ba5be1f167e565c458f30",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
         "affectsGlobalScope": false
       },
@@ -7359,6 +7359,31 @@
       "./node_modules/@types/yargs/index.d.ts": {
         "version": "09c4b2e2d3070239d563fc690f0cc5db04a2d9b66a23e61aef8b5274e3e9910c",
         "signature": "09c4b2e2d3070239d563fc690f0cc5db04a2d9b66a23e61aef8b5274e3e9910c",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/keyv/index.d.ts": {
+        "version": "82169f198ffdfc787fba368ccfad2b2d8ef3712f3c696df94ac13f6884bbbe2d",
+        "signature": "82169f198ffdfc787fba368ccfad2b2d8ef3712f3c696df94ac13f6884bbbe2d",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/http-cache-semantics/index.d.ts": {
+        "version": "cab425b5559edac18327eb2c3c0f47e7e9f71b667290b7689faafd28aac69eae",
+        "signature": "cab425b5559edac18327eb2c3c0f47e7e9f71b667290b7689faafd28aac69eae",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/responselike/index.d.ts": {
+        "version": "3cfb0cb51cc2c2e1b313d7c4df04dbf7e5bda0a133c6b309bf6af77cf614b971",
+        "signature": "3cfb0cb51cc2c2e1b313d7c4df04dbf7e5bda0a133c6b309bf6af77cf614b971",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/cacheable-request/index.d.ts": {
+        "version": "f992cd6cc0bcbaa4e6c810468c90f2d8595f8c6c3cf050c806397d3de8585562",
+        "signature": "f992cd6cc0bcbaa4e6c810468c90f2d8595f8c6c3cf050c806397d3de8585562",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/minimist/index.d.ts": {
+        "version": "209e814e8e71aec74f69686a9506dd7610b97ab59dcee9446266446f72a76d05",
+        "signature": "209e814e8e71aec74f69686a9506dd7610b97ab59dcee9446266446f72a76d05",
         "affectsGlobalScope": false
       }
     },
@@ -17896,6 +17921,38 @@
       "./types.d.ts": [
         "./node_modules/@types/node/ts3.2/util.d.ts",
         "./node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@types/cacheable-request/index.d.ts": [
+        "../node_modules/@types/http-cache-semantics/index.d.ts",
+        "../node_modules/@types/keyv/index.d.ts",
+        "../node_modules/@types/responselike/index.d.ts",
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/http.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts",
+        "./node_modules/@types/node/ts3.7/index.d.ts",
+        "./node_modules/@types/node/url.d.ts",
+        "./node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@types/http-cache-semantics/index.d.ts": [
+        "./node_modules/@types/node/ts3.2/util.d.ts",
+        "./node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@types/keyv/index.d.ts": [
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts",
+        "./node_modules/@types/node/ts3.7/index.d.ts",
+        "./node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@types/minimist/index.d.ts": [
+        "./node_modules/@types/node/ts3.2/util.d.ts",
+        "./node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@types/responselike/index.d.ts": [
+        "./node_modules/@types/node/http.d.ts",
+        "./node_modules/@types/node/stream.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts",
+        "./node_modules/@types/node/ts3.7/index.d.ts",
+        "./node_modules/@types/node/util.d.ts"
       ]
     },
     "exportedModulesMap": {
@@ -28385,10 +28442,41 @@
       "./types.d.ts": [
         "./node_modules/@types/node/ts3.2/util.d.ts",
         "./node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@types/cacheable-request/index.d.ts": [
+        "../node_modules/@types/http-cache-semantics/index.d.ts",
+        "../node_modules/@types/keyv/index.d.ts",
+        "../node_modules/@types/responselike/index.d.ts",
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/http.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts",
+        "./node_modules/@types/node/ts3.7/index.d.ts",
+        "./node_modules/@types/node/url.d.ts",
+        "./node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@types/http-cache-semantics/index.d.ts": [
+        "./node_modules/@types/node/ts3.2/util.d.ts",
+        "./node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@types/keyv/index.d.ts": [
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts",
+        "./node_modules/@types/node/ts3.7/index.d.ts",
+        "./node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@types/minimist/index.d.ts": [
+        "./node_modules/@types/node/ts3.2/util.d.ts",
+        "./node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@types/responselike/index.d.ts": [
+        "./node_modules/@types/node/http.d.ts",
+        "./node_modules/@types/node/stream.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts",
+        "./node_modules/@types/node/ts3.7/index.d.ts",
+        "./node_modules/@types/node/util.d.ts"
       ]
     },
     "semanticDiagnosticsPerFile": [
-      "./index.ts",
       "./lib/crow-api-stack.ts",
       "./node_modules/@babel/parser/typings/babel-parser.d.ts",
       "./node_modules/@babel/types/lib/index.d.ts",
@@ -29859,7 +29947,12 @@
       "./node_modules/typescript/lib/lib.es5.d.ts",
       "./node_modules/typescript/lib/lib.esnext.intl.d.ts",
       "./test/crow-api.test.ts",
-      "./types.d.ts"
+      "./types.d.ts",
+      "../node_modules/@types/cacheable-request/index.d.ts",
+      "../node_modules/@types/http-cache-semantics/index.d.ts",
+      "../node_modules/@types/keyv/index.d.ts",
+      "../node_modules/@types/minimist/index.d.ts",
+      "../node_modules/@types/responselike/index.d.ts"
     ]
   },
   "version": "3.9.10"

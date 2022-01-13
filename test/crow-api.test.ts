@@ -87,6 +87,12 @@ describe('Successful creation', () => {
           },
         },
       ],
+      requestValidators: [
+        {
+          requestValidatorName: 'validateBody',
+          validateRequestBody: true,
+        },
+      ],
       methodConfigurations: {
         '/v1/authors/get': {},
         '/v1/authors/post': {
@@ -94,6 +100,7 @@ describe('Successful creation', () => {
           requestModels: {
             'application/json': 'authorsPost',
           },
+          requestValidator: 'validateBody',
         },
         '/v1/book/get': {
           useAuthorizerLambda: true,
@@ -267,6 +274,18 @@ describe('Successful creation', () => {
     });
     const authorsPostModelLogicalId = logicalIdFromResource(authorsPostModel);
 
+    // Find Validators
+    const authorsPostValidator = template.findResources('AWS::ApiGateway::RequestValidator', {
+      Properties: {
+        RestApiId: {
+          Ref: restApiLogicalId,
+        },
+        Name: 'validateBody',
+        ValidateRequestBody: true,
+      },
+    });
+    const authorsPostValidatorLogicalId = logicalIdFromResource(authorsPostValidator);
+
     // Test that methods have the correct configuration passed down
     //   and are mapping to the correct Lambda
     template.hasResourceProperties('AWS::ApiGateway::Method', {
@@ -334,6 +353,9 @@ describe('Successful creation', () => {
         'application/json': {
           Ref: authorsPostModelLogicalId,
         },
+      },
+      RequestValidatorId: {
+        Ref: authorsPostValidatorLogicalId,
       },
     });
 

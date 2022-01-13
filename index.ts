@@ -50,7 +50,8 @@ export interface CrowMethodConfiguration {
   // Takes a string which is matched with the modelName
   readonly requestModels?: { [contentType: string]: string },
   readonly requestParameters?: { [param: string]: boolean },
-  // requestValidator?: apigateway.IRequestValidator is not allowed on purpose
+  // Takes a string which is matched with the requestValidatorName
+  readonly requestValidator?: string,
   readonly requestValidatorOptions?: apigateway.RequestValidatorOptions,
   readonly useAuthorizerLambda?: boolean,
 }
@@ -325,8 +326,12 @@ export class CrowApi extends Construct {
             useAuthorizerLambda: authorizerLambdaConfigured = false,
             requestModels: crowRequestModels,
             methodResponses: crowMethodResponses,
+            requestValidator: requestValidatorString,
             ...userMethodConfiguration
           } = methodConfigurations[newApiPath] || {};
+          let bundledMethodConfiguration: any = {
+            ...userMethodConfiguration,
+          };
 
           // Map models
           const requestModels: { [contentType: string]: apigateway.IModel } = {};
@@ -359,27 +364,25 @@ export class CrowApi extends Construct {
             })
           }
 
-          let methodConfiguration = {
-            ...userMethodConfiguration,
-            requestModels,
-            methodResponses,
-          };
+          // Find request validator
+          if (requestValidatorString
+            && createdRequestValidators[requestValidatorString]) {
+            bundledMethodConfiguration.requestValidator = createdRequestValidators[requestValidatorString];
+          }
+
+          bundledMethodConfiguration.requestModels = requestModels;
+          bundledMethodConfiguration.methodResponses = methodResponses;
           // If this method should be behind an authorizer Lambda
           //   construct the methodConfiguration object as such
           if (authorizerLambdaConfigured && useAuthorizerLambda) {
-            methodConfiguration = {
-              ...userMethodConfiguration,
-              authorizationType: apigateway.AuthorizationType.CUSTOM,
-              authorizer: tokenAuthorizer,
-              requestModels,
-              methodResponses,
-            }
+            bundledMethodConfiguration.authorizationType = apigateway.AuthorizationType.CUSTOM;
+            bundledMethodConfiguration.authorizer = tokenAuthorizer;
           }
 
           graph[apiPath].resource.addMethod(
             child.toUpperCase(),
             new apigateway.LambdaIntegration(newLambda),
-            methodConfiguration,
+            bundledMethodConfiguration,
           );
           graph[apiPath].verbs.push(child);
           lambdasByPath[newApiPath] = newLambda;
