@@ -23,9 +23,10 @@ Contents:
   - [`apiGatewayName`](#apigatewayname)
   - [`apiGatewayConfiguration`](#apigatewayconfiguration)
   - [`lambdaConfigurations`](#lambdaconfigurations)
-  - [`methodConfigurations`](#methodconfigurations)
+  - [`lambdaIntegrationOptions`](#lambdaintegrationoptions)
   - [`models`](#models)
   - [`requestValidators`](#requestValidators)
+  - [`methodConfigurations`](#methodconfigurations)
 - [Properties](#properties)
   - [`authorizerLambda`](#authorizerlambda)
   - [`gateway`](#gateway)
@@ -238,6 +239,18 @@ new CrowApiStack(app, 'CrowApiStack', {
 });
 ```
 
+#### `lambdaIntegrationOptions`
+
+This prop is an object with keys corresponding to the API path of a Lambda function and a value corresponding to the configuration that should be applied to the Lambda Integration. The configuration allowed is exactly the same as the [LambdaIntegrationOptions](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigateway.LambdaIntegrationOptions.html).
+
+#### `models`
+
+This prop helps set up the `Model`s used in `methodConfiguration` above. It is an array of `CrowModelOptions` which are the same as [`MethodOptions`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigateway.ModelOptions.html) except that the `modelName` is required. The `Model`s will receive an ID equal to its `modelName` which is why that prop is required. The `IModel` can then be referenced in `methodConfigurations` using its `modelName`.
+
+#### `requestValidators`
+
+This prop helps set up the `RequestValidator`s used in `methodConfiguration` above. It is an array of `CrowRequestValidatorOptions` which are the same as [`RequestValidatorOptions`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigateway.RequestValidatorOptions.html) except that the `requestValidatorName` is required. The `RequestValidator`s will receive an ID equal to its `requestValidatorName` which is why that prop is required. The `IRequestValidator` can then be referenced in `methodConfigurations` using its `requestValidatorName`.
+
 #### `methodConfigurations`
 
 This prop allows for more complex overrides to individual methods. The prop is an object with keys corresponding to the API path of a method and a value corresponding to the configuration that should be applied to the method as well as the key `useAuthorizerLambda` which will invoke the authorizer Lambda whenever the method is called. The configuration allowed is almost exactly the same as [`MethodOptions`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigateway.MethodOptions.html) plus the `useAuthorizerLambda` boolean.
@@ -297,14 +310,6 @@ new CrowApiStack(app, 'CrowApiStack', {
   },
 });
 ```
-
-#### `models`
-
-This prop helps set up the `Model`s used in `methodConfiguration` above. It is an array of `CrowModelOptions` which are the same as [`MethodOptions`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigateway.ModelOptions.html) except that the `modelName` is required. The `Model`s will receive an ID equal to its `modelName` which is why that prop is required. The `IModel` can then be referenced in `methodConfigurations` using its `modelName`.
-
-#### `requestValidators`
-
-This prop helps set up the `RequestValidator`s used in `methodConfiguration` above. It is an array of `CrowRequestValidatorOptions` which are the same as [`RequestValidatorOptions`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigateway.RequestValidatorOptions.html) except that the `requestValidatorName` is required. The `RequestValidator`s will receive an ID equal to its `requestValidatorName` which is why that prop is required. The `IRequestValidator` can then be referenced in `methodConfigurations` using its `requestValidatorName`.
 
 ## Properties
 

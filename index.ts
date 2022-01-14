@@ -84,6 +84,9 @@ export interface CrowApiProps {
   readonly apiGatewayConfiguration?: apigateway.RestApiProps | any,
   readonly apiGatewayName?: string,
   readonly lambdaConfigurations?: CrowLambdaConfigurations,
+  readonly lambdaIntegrationOptions?: {
+    [lambdaPath: string]: apigateway.LambdaIntegrationOptions,
+  }
   readonly models?: CrowModelOptions[],
   readonly requestValidators?: CrowRequestValidatorOptions[],
   readonly methodConfigurations?: CrowMethodConfigurations,
@@ -130,6 +133,7 @@ export class CrowApi extends Construct {
       apiGatewayConfiguration = {},
       apiGatewayName = 'crow-api',
       lambdaConfigurations = {},
+      lambdaIntegrationOptions = {},
       models = [],
       requestValidators = [],
       methodConfigurations = {},
@@ -381,9 +385,10 @@ export class CrowApi extends Construct {
             bundledMethodConfiguration.authorizer = tokenAuthorizer;
           }
 
+          const integrationOptions = lambdaIntegrationOptions[newApiPath] || {};
           graph[apiPath].resource.addMethod(
             child.toUpperCase(),
-            new apigateway.LambdaIntegration(newLambda),
+            new apigateway.LambdaIntegration(newLambda, integrationOptions),
             bundledMethodConfiguration,
           );
           graph[apiPath].verbs.push(child);

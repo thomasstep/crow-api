@@ -71,6 +71,13 @@ describe('Successful creation', () => {
           memorySize: 1024,
         },
       },
+      lambdaIntegrationOptions: {
+        '/v1/book/get': {
+          requestParameters: {
+            'integration.request.querystring.author': 'method.request.querystring.author',
+          },
+        },
+      },
       models: [
         {
           modelName: 'authorsPost',
@@ -104,6 +111,9 @@ describe('Successful creation', () => {
         },
         '/v1/book/get': {
           useAuthorizerLambda: true,
+          requestParameters: {
+            'method.request.querystring.author': true,
+          },
         },
         '/v1/book/post': {
           apiKeyRequired: true,
@@ -368,6 +378,9 @@ describe('Successful creation', () => {
         Ref: restApiLogicalId,
       },
       AuthorizationType: 'CUSTOM',
+      RequestParameters: {
+        'method.request.querystring.author': true,
+      },
       Integration: {
         Uri: {
           'Fn::Join': [
@@ -388,6 +401,9 @@ describe('Successful creation', () => {
             ],
           ],
         },
+        RequestParameters: {
+          'integration.request.querystring.author': 'method.request.querystring.author'
+        }
       },
     });
 
