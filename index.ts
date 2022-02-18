@@ -104,8 +104,9 @@ interface FSGraph {
 }
 
 export class CrowApi extends Construct {
-  public authorizerLambda!: lambda.Function;
   public gateway!: apigateway.RestApi;
+  public authorizer!: apigateway.IAuthorizer;
+  public authorizerLambda!: lambda.Function;
   public lambdaLayer!: lambda.LayerVersion | undefined;
   public lambdaFunctions!: LambdasByPath;
   public models!: { [modelName: string]: apigateway.IModel };
@@ -274,6 +275,7 @@ export class CrowApi extends Construct {
         'token-authorizer',
         bundledTokenAuthConfig
       );
+      this.authorizer = tokenAuthorizer;
     }
 
     // Time to start walking the directories

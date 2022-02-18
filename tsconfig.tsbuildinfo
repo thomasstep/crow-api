@@ -7222,7 +7222,7 @@
         "affectsGlobalScope": false
       },
       "./index.ts": {
-        "version": "69bbb80826a1af536e4c77f13f0ad099ace67b9a1820297fe0fbc49bc3349efd",
+        "version": "02eaa3224b91058a76c040d1d96e7e5a60913d2388bc70c4caf3521d10838732",
         "signature": "3dc607389133e0da2d5abc56e6c5ddcea528fc2509a5954df10190a52fb66a11",
         "affectsGlobalScope": false
       },
@@ -28477,7 +28477,6 @@
       ]
     },
     "semanticDiagnosticsPerFile": [
-      "./index.ts",
       "./lib/crow-api-stack.ts",
       "./node_modules/@babel/parser/typings/babel-parser.d.ts",
       "./node_modules/@babel/types/lib/index.d.ts",

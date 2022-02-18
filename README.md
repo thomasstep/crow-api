@@ -28,8 +28,9 @@ Contents:
   - [`requestValidators`](#requestValidators)
   - [`methodConfigurations`](#methodconfigurations)
 - [Properties](#properties)
-  - [`authorizerLambda`](#authorizerlambda)
   - [`gateway`](#gateway)
+  - [`authorizer`](#authorizer)
+  - [`authorizerLambda`](#authorizerlambda)
   - [`lambdaLayer`](#lambdalayer)
   - [`lambdaFunctions`](#lambdafunctions)
   - [`models`](#models)
@@ -315,11 +316,14 @@ new CrowApiStack(app, 'CrowApiStack', {
 
 A `CrowApi` construct will give full access to all of the resources it created.
 
-#### `authorizerLambda`
-This is the `lambda.Function` that authorizes API Gateway requests.
-
 #### `gateway`
 This is the `apigateway.RestApi` that all of the created Lambda functions sit behind.
+
+#### `authorizer`
+This is the `apigateway.IAuthorizer` that is attached to the API Gateway.
+
+#### `authorizerLambda`
+This is the `lambda.Function` that authorizes API Gateway requests.
 
 #### `lambdaLayer`
 If the `sharedDirectory` is populated, this is the `lambda.LayerVersion` created for that code. If the `sharedDirectory` is not populated, then this is `undefined`.

@@ -2830,7 +2830,7 @@
         },
         "locationInModule": {
           "filename": "index.ts",
-          "line": 120
+          "line": 121
         },
         "parameters": [
           {
@@ -2866,7 +2866,20 @@
           },
           "locationInModule": {
             "filename": "index.ts",
-            "line": 107
+            "line": 108
+          },
+          "name": "authorizer",
+          "type": {
+            "fqn": "aws-cdk-lib.aws_apigateway.IAuthorizer"
+          }
+        },
+        {
+          "docs": {
+            "stability": "experimental"
+          },
+          "locationInModule": {
+            "filename": "index.ts",
+            "line": 109
           },
           "name": "authorizerLambda",
           "type": {
@@ -2879,7 +2892,7 @@
           },
           "locationInModule": {
             "filename": "index.ts",
-            "line": 108
+            "line": 107
           },
           "name": "gateway",
           "type": {
@@ -2892,7 +2905,7 @@
           },
           "locationInModule": {
             "filename": "index.ts",
-            "line": 110
+            "line": 111
           },
           "name": "lambdaFunctions",
           "type": {
@@ -2905,7 +2918,7 @@
           },
           "locationInModule": {
             "filename": "index.ts",
-            "line": 111
+            "line": 112
           },
           "name": "models",
           "type": {
@@ -2923,7 +2936,7 @@
           },
           "locationInModule": {
             "filename": "index.ts",
-            "line": 112
+            "line": 113
           },
           "name": "requestValidators",
           "type": {
@@ -2941,7 +2954,7 @@
           },
           "locationInModule": {
             "filename": "index.ts",
-            "line": 109
+            "line": 110
           },
           "name": "lambdaLayer",
           "optional": true,
@@ -3701,5 +3714,5 @@
     }
   },
   "version": "2.3.1",
-  "fingerprint": "Ouj65VbK24rlV8iWBPpBNsQb+CmRoIRy38H5L+MqACw="
+  "fingerprint": "Dskq3Nw2XnJQuMEg3H2m9tHaKtdSfybD3XkHYIuCG7A="
 }
