@@ -319,6 +319,9 @@ A `CrowApi` construct will give full access to all of the resources it created.
 #### `gateway`
 This is the `apigateway.RestApi` that all of the created Lambda functions sit behind.
 
+#### `usagePlan`
+This is the `apigateway.UsagePlan` associated with the API Gateway and pre-created API key if that is enabled.
+
 #### `authorizer`
 This is the `apigateway.IAuthorizer` that is attached to the API Gateway.
 

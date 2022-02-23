@@ -105,6 +105,7 @@ interface FSGraph {
 
 export class CrowApi extends Construct {
   public gateway!: apigateway.RestApi;
+  public usagePlan!: apigateway.UsagePlan;
   public authorizer!: apigateway.IAuthorizer;
   public authorizerLambda!: lambda.Function;
   public lambdaLayer!: lambda.LayerVersion | undefined;
@@ -240,6 +241,7 @@ export class CrowApi extends Construct {
         ],
       });
       usagePlan.addApiKey(apiKey);
+      this.usagePlan = usagePlan;
     }
 
     // Create Lambda layer out of shared directory if it exists
