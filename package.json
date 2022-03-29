@@ -1,6 +1,6 @@
 {
   "name": "crow-api",
-  "version": "2.3.3",
+  "version": "2.4.3",
   "license": "Apache-2.0",
   "description": "AWS CDK Construct to create a serverless API based on file structure.",
   "homepage": "https://github.com/thomasstep/crow-api",
@@ -40,7 +40,7 @@
   "devDependencies": {
     "@types/jest": "^26.0.10",
     "@types/node": "10.17.27",
-    "aws-cdk-lib": "2.1.0",
+    "aws-cdk-lib": "2.18.0",
     "constructs": "10.0.9",
     "jest": "^26.4.2",
     "jsii": "^1.46.0",
@@ -52,16 +52,17 @@
     "typescript": "~3.9.7"
   },
   "dependencies": {
+    "crow-api": "^2.3.3",
     "fs-extra": "^10.0.0",
     "source-map-support": "^0.5.16",
-    "aws-cdk-lib": "2.1.0"
+    "aws-cdk-lib": "^2.18.0"
   },
   "bundledDependencies": [
     "fs-extra",
     "source-map-support"
   ],
   "peerDependencies": {
-    "aws-cdk-lib": "^2.1.0",
+    "aws-cdk-lib": "^2.18.0",
     "constructs": "^10.0.9"
   },
   "stability": "experimental",

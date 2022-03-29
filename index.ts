@@ -4,9 +4,6 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as logs from 'aws-cdk-lib/aws-logs';
 
-/**
- * For copying shared code to all paths
- */
 import * as fse from 'fs-extra';
 
 export interface LambdasByPath {

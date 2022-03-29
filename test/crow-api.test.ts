@@ -3,7 +3,6 @@ import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as logs from 'aws-cdk-lib/aws-logs';
 import { Template } from 'aws-cdk-lib/assertions';
-// import { assert } from 'console';
 import * as CrowApi from '../lib/crow-api-stack';
 
 function getLogicalId(stack: cdk.Stack, resource: cdk.IResource) {

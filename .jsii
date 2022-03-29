@@ -15,8 +15,9 @@
     "source-map-support": "^0.5.16"
   },
   "dependencies": {
-    "aws-cdk-lib": "^2.1.0",
-    "constructs": "^10.0.9"
+    "aws-cdk-lib": "^2.18.0",
+    "constructs": "^10.0.9",
+    "crow-api": "^2.3.3"
   },
   "dependencyClosure": {
     "aws-cdk-lib": {
@@ -109,6 +110,19 @@
             },
             "python": {
               "module": "aws_cdk.aws_amplify"
+            }
+          }
+        },
+        "aws-cdk-lib.aws_amplifyuibuilder": {
+          "targets": {
+            "dotnet": {
+              "namespace": "Amazon.CDK.AWS.AmplifyUIBuilder"
+            },
+            "java": {
+              "package": "software.amazon.awscdk.services.amplifyuibuilder"
+            },
+            "python": {
+              "module": "aws_cdk.aws_amplifyuibuilder"
             }
           }
         },
@@ -369,6 +383,19 @@
             },
             "python": {
               "module": "aws_cdk.aws_batch"
+            }
+          }
+        },
+        "aws-cdk-lib.aws_billingconductor": {
+          "targets": {
+            "dotnet": {
+              "namespace": "Amazon.CDK.AWS.BillingConductor"
+            },
+            "java": {
+              "package": "software.amazon.awscdk.services.billingconductor"
+            },
+            "python": {
+              "module": "aws_cdk.aws_billingconductor"
             }
           }
         },
@@ -1127,6 +1154,19 @@
             }
           }
         },
+        "aws-cdk-lib.aws_evidently": {
+          "targets": {
+            "dotnet": {
+              "namespace": "Amazon.CDK.AWS.Evidently"
+            },
+            "java": {
+              "package": "software.amazon.awscdk.services.evidently"
+            },
+            "python": {
+              "module": "aws_cdk.aws_evidently"
+            }
+          }
+        },
         "aws-cdk-lib.aws_finspace": {
           "targets": {
             "dotnet": {
@@ -1163,6 +1203,19 @@
             },
             "python": {
               "module": "aws_cdk.aws_fms"
+            }
+          }
+        },
+        "aws-cdk-lib.aws_forecast": {
+          "targets": {
+            "dotnet": {
+              "namespace": "Amazon.CDK.AWS.Forecast"
+            },
+            "java": {
+              "package": "software.amazon.awscdk.services.forecast"
+            },
+            "python": {
+              "module": "aws_cdk.aws_forecast"
             }
           }
         },
@@ -1348,6 +1401,19 @@
             }
           }
         },
+        "aws-cdk-lib.aws_inspectorv2": {
+          "targets": {
+            "dotnet": {
+              "namespace": "Amazon.CDK.AWS.InspectorV2"
+            },
+            "java": {
+              "package": "software.amazon.awscdk.services.inspectorv2"
+            },
+            "python": {
+              "module": "aws_cdk.aws_inspectorv2"
+            }
+          }
+        },
         "aws-cdk-lib.aws_iot": {
           "targets": {
             "dotnet": {
@@ -1478,6 +1544,19 @@
             }
           }
         },
+        "aws-cdk-lib.aws_kafkaconnect": {
+          "targets": {
+            "dotnet": {
+              "namespace": "Amazon.CDK.AWS.KafkaConnect"
+            },
+            "java": {
+              "package": "software.amazon.awscdk.services.kafkaconnect"
+            },
+            "python": {
+              "module": "aws_cdk.aws_kafkaconnect"
+            }
+          }
+        },
         "aws-cdk-lib.aws_kendra": {
           "targets": {
             "dotnet": {
@@ -1517,6 +1596,19 @@
             }
           }
         },
+        "aws-cdk-lib.aws_kinesisanalyticsv2": {
+          "targets": {
+            "dotnet": {
+              "namespace": "Amazon.CDK.AWS.KinesisAnalyticsV2"
+            },
+            "java": {
+              "package": "software.amazon.awscdk.services.kinesisanalyticsv2"
+            },
+            "python": {
+              "module": "aws_cdk.aws_kinesisanalyticsv2"
+            }
+          }
+        },
         "aws-cdk-lib.aws_kinesisfirehose": {
           "targets": {
             "dotnet": {
@@ -1527,6 +1619,19 @@
             },
             "python": {
               "module": "aws_cdk.aws_kinesisfirehose"
+            }
+          }
+        },
+        "aws-cdk-lib.aws_kinesisvideo": {
+          "targets": {
+            "dotnet": {
+              "namespace": "Amazon.CDK.AWS.KinesisVideo"
+            },
+            "java": {
+              "package": "software.amazon.awscdk.services.kinesisvideo"
+            },
+            "python": {
+              "module": "aws_cdk.aws_kinesisvideo"
             }
           }
         },
@@ -1605,6 +1710,19 @@
             },
             "python": {
               "module": "aws_cdk.aws_lambda_nodejs"
+            }
+          }
+        },
+        "aws-cdk-lib.aws_lex": {
+          "targets": {
+            "dotnet": {
+              "namespace": "Amazon.CDK.AWS.Lex"
+            },
+            "java": {
+              "package": "software.amazon.awscdk.services.lex"
+            },
+            "python": {
+              "module": "aws_cdk.aws_lex"
             }
           }
         },
@@ -1946,6 +2064,19 @@
             }
           }
         },
+        "aws-cdk-lib.aws_personalize": {
+          "targets": {
+            "dotnet": {
+              "namespace": "Amazon.CDK.AWS.Personalize"
+            },
+            "java": {
+              "package": "software.amazon.awscdk.services.personalize"
+            },
+            "python": {
+              "module": "aws_cdk.aws_personalize"
+            }
+          }
+        },
         "aws-cdk-lib.aws_pinpoint": {
           "targets": {
             "dotnet": {
@@ -2037,6 +2168,19 @@
             }
           }
         },
+        "aws-cdk-lib.aws_refactorspaces": {
+          "targets": {
+            "dotnet": {
+              "namespace": "Amazon.CDK.AWS.RefactorSpaces"
+            },
+            "java": {
+              "package": "software.amazon.awscdk.services.refactorspaces"
+            },
+            "python": {
+              "module": "aws_cdk.aws_refactorspaces"
+            }
+          }
+        },
         "aws-cdk-lib.aws_rekognition": {
           "targets": {
             "dotnet": {
@@ -2047,6 +2191,19 @@
             },
             "python": {
               "module": "aws_cdk.aws_rekognition"
+            }
+          }
+        },
+        "aws-cdk-lib.aws_resiliencehub": {
+          "targets": {
+            "dotnet": {
+              "namespace": "Amazon.CDK.AWS.ResilienceHub"
+            },
+            "java": {
+              "package": "software.amazon.awscdk.services.resiliencehub"
+            },
+            "python": {
+              "module": "aws_cdk.aws_resiliencehub"
             }
           }
         },
@@ -2151,6 +2308,19 @@
             },
             "python": {
               "module": "aws_cdk.aws_route53resolver"
+            }
+          }
+        },
+        "aws-cdk-lib.aws_rum": {
+          "targets": {
+            "dotnet": {
+              "namespace": "Amazon.CDK.AWS.RUM"
+            },
+            "java": {
+              "package": "software.amazon.awscdk.services.rum"
+            },
+            "python": {
+              "module": "aws_cdk.aws_rum"
             }
           }
         },
@@ -2725,6 +2895,19 @@
               "module": "aws_cdk.region_info"
             }
           }
+        },
+        "aws-cdk-lib.triggers": {
+          "targets": {
+            "dotnet": {
+              "namespace": "Amazon.CDK.Triggers"
+            },
+            "java": {
+              "package": "software.amazon.awscdk.triggers"
+            },
+            "python": {
+              "module": "aws_cdk.triggers"
+            }
+          }
         }
       },
       "targets": {
@@ -2775,6 +2958,17 @@
         "python": {
           "distName": "constructs",
           "module": "constructs"
+        }
+      }
+    },
+    "crow-api": {
+      "targets": {
+        "js": {
+          "npm": "crow-api"
+        },
+        "python": {
+          "distName": "crow-api.core",
+          "module": "crow_api.core"
         }
       }
     }
@@ -2830,7 +3024,7 @@
         },
         "locationInModule": {
           "filename": "index.ts",
-          "line": 122
+          "line": 119
         },
         "parameters": [
           {
@@ -2856,7 +3050,7 @@
       "kind": "class",
       "locationInModule": {
         "filename": "index.ts",
-        "line": 106
+        "line": 103
       },
       "name": "CrowApi",
       "properties": [
@@ -2866,7 +3060,7 @@
           },
           "locationInModule": {
             "filename": "index.ts",
-            "line": 109
+            "line": 106
           },
           "name": "authorizer",
           "type": {
@@ -2879,7 +3073,7 @@
           },
           "locationInModule": {
             "filename": "index.ts",
-            "line": 110
+            "line": 107
           },
           "name": "authorizerLambda",
           "type": {
@@ -2892,7 +3086,7 @@
           },
           "locationInModule": {
             "filename": "index.ts",
-            "line": 107
+            "line": 104
           },
           "name": "gateway",
           "type": {
@@ -2905,7 +3099,7 @@
           },
           "locationInModule": {
             "filename": "index.ts",
-            "line": 112
+            "line": 109
           },
           "name": "lambdaFunctions",
           "type": {
@@ -2918,7 +3112,7 @@
           },
           "locationInModule": {
             "filename": "index.ts",
-            "line": 113
+            "line": 110
           },
           "name": "models",
           "type": {
@@ -2936,7 +3130,7 @@
           },
           "locationInModule": {
             "filename": "index.ts",
-            "line": 114
+            "line": 111
           },
           "name": "requestValidators",
           "type": {
@@ -2954,7 +3148,7 @@
           },
           "locationInModule": {
             "filename": "index.ts",
-            "line": 108
+            "line": 105
           },
           "name": "usagePlan",
           "type": {
@@ -2967,7 +3161,7 @@
           },
           "locationInModule": {
             "filename": "index.ts",
-            "line": 111
+            "line": 108
           },
           "name": "lambdaLayer",
           "optional": true,
@@ -2988,7 +3182,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "index.ts",
-        "line": 66
+        "line": 63
       },
       "name": "CrowApiProps",
       "properties": [
@@ -3000,7 +3194,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 84
+            "line": 81
           },
           "name": "apiGatewayConfiguration",
           "optional": true,
@@ -3016,7 +3210,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 85
+            "line": 82
           },
           "name": "apiGatewayName",
           "optional": true,
@@ -3032,7 +3226,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 70
+            "line": 67
           },
           "name": "authorizerDirectory",
           "optional": true,
@@ -3048,7 +3242,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 74
+            "line": 71
           },
           "name": "authorizerLambdaConfiguration",
           "optional": true,
@@ -3064,7 +3258,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 79
+            "line": 76
           },
           "name": "createApiKey",
           "optional": true,
@@ -3080,7 +3274,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 86
+            "line": 83
           },
           "name": "lambdaConfigurations",
           "optional": true,
@@ -3096,7 +3290,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 87
+            "line": 84
           },
           "name": "lambdaIntegrationOptions",
           "optional": true,
@@ -3117,7 +3311,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 80
+            "line": 77
           },
           "name": "logRetention",
           "optional": true,
@@ -3133,7 +3327,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 92
+            "line": 89
           },
           "name": "methodConfigurations",
           "optional": true,
@@ -3149,7 +3343,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 90
+            "line": 87
           },
           "name": "models",
           "optional": true,
@@ -3170,7 +3364,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 91
+            "line": 88
           },
           "name": "requestValidators",
           "optional": true,
@@ -3191,7 +3385,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 68
+            "line": 65
           },
           "name": "sharedDirectory",
           "optional": true,
@@ -3207,7 +3401,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 67
+            "line": 64
           },
           "name": "sourceDirectory",
           "optional": true,
@@ -3223,7 +3417,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 78
+            "line": 75
           },
           "name": "tokenAuthorizerConfiguration",
           "optional": true,
@@ -3239,7 +3433,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 69
+            "line": 66
           },
           "name": "useAuthorizerLambda",
           "optional": true,
@@ -3260,7 +3454,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "index.ts",
-        "line": 16
+        "line": 13
       },
       "name": "CrowLambdaConfigurations",
       "symbolId": "index:CrowLambdaConfigurations"
@@ -3275,7 +3469,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "index.ts",
-        "line": 42
+        "line": 39
       },
       "name": "CrowMethodConfiguration",
       "properties": [
@@ -3287,7 +3481,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 44
+            "line": 41
           },
           "name": "apiKeyRequired",
           "optional": true,
@@ -3303,7 +3497,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 45
+            "line": 42
           },
           "name": "authorizationScopes",
           "optional": true,
@@ -3324,7 +3518,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 46
+            "line": 43
           },
           "name": "authorizationType",
           "optional": true,
@@ -3340,7 +3534,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 47
+            "line": 44
           },
           "name": "authorizer",
           "optional": true,
@@ -3356,7 +3550,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 48
+            "line": 45
           },
           "name": "methodResponses",
           "optional": true,
@@ -3377,7 +3571,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 49
+            "line": 46
           },
           "name": "operationName",
           "optional": true,
@@ -3393,7 +3587,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 51
+            "line": 48
           },
           "name": "requestModels",
           "optional": true,
@@ -3414,7 +3608,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 52
+            "line": 49
           },
           "name": "requestParameters",
           "optional": true,
@@ -3435,7 +3629,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 54
+            "line": 51
           },
           "name": "requestValidator",
           "optional": true,
@@ -3451,7 +3645,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 55
+            "line": 52
           },
           "name": "requestValidatorOptions",
           "optional": true,
@@ -3467,7 +3661,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 56
+            "line": 53
           },
           "name": "useAuthorizerLambda",
           "optional": true,
@@ -3488,7 +3682,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "index.ts",
-        "line": 59
+        "line": 56
       },
       "name": "CrowMethodConfigurations",
       "symbolId": "index:CrowMethodConfigurations"
@@ -3503,7 +3697,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "index.ts",
-        "line": 35
+        "line": 32
       },
       "name": "CrowMethodResponse",
       "properties": [
@@ -3515,7 +3709,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 36
+            "line": 33
           },
           "name": "statusCode",
           "type": {
@@ -3530,7 +3724,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 38
+            "line": 35
           },
           "name": "responseModels",
           "optional": true,
@@ -3551,7 +3745,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 39
+            "line": 36
           },
           "name": "responseParameters",
           "optional": true,
@@ -3577,7 +3771,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "index.ts",
-        "line": 21
+        "line": 18
       },
       "name": "CrowModelOptions",
       "properties": [
@@ -3589,7 +3783,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 23
+            "line": 20
           },
           "name": "modelName",
           "type": {
@@ -3604,7 +3798,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 22
+            "line": 19
           },
           "name": "schema",
           "type": {
@@ -3619,7 +3813,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 24
+            "line": 21
           },
           "name": "contentType",
           "optional": true,
@@ -3635,7 +3829,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 25
+            "line": 22
           },
           "name": "description",
           "optional": true,
@@ -3656,7 +3850,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "index.ts",
-        "line": 29
+        "line": 26
       },
       "name": "CrowRequestValidatorOptions",
       "properties": [
@@ -3668,7 +3862,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 30
+            "line": 27
           },
           "name": "requestValidatorName",
           "type": {
@@ -3683,7 +3877,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 31
+            "line": 28
           },
           "name": "validateRequestBody",
           "optional": true,
@@ -3699,7 +3893,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "index.ts",
-            "line": 32
+            "line": 29
           },
           "name": "validateRequestParameters",
           "optional": true,
@@ -3720,12 +3914,12 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "index.ts",
-        "line": 12
+        "line": 9
       },
       "name": "LambdasByPath",
       "symbolId": "index:LambdasByPath"
     }
   },
   "version": "2.3.3",
-  "fingerprint": "8fa/ZBquAg8dwOORCKBIQnmb7jtzfSqqqeC4gHO4IK4="
+  "fingerprint": "MCSVw6AcKfeoCx3S1jX+bMiVj0jJHBcvq1HiSJz2BF8="
 }
